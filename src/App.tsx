@@ -10,6 +10,7 @@ import Pricing from './components/Pricing';
 import Blog from './components/Blog';
 import Download from './components/Download';
 import Footer from './components/Footer';
+import DatingApp from './components/dating/DatingApp';
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
       <About />
       <Pricing />
       <Blog />
+      <section id="dating">
+        <DatingApp />
+      </section>
       <Download />
       <Footer />
     </div>

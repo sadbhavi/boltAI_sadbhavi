@@ -1,11 +1,27 @@
 import React from 'react';
 import { Check, Star } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import SubscriptionModal from './subscription/SubscriptionModal';
 
 const Pricing = () => {
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState('');
+  const { user, isPremium } = useAuth();
+
+  const handlePlanSelect = (planId: string) => {
+    if (!user) {
+      alert('Please login first to subscribe');
+      return;
+    }
+    setSelectedPlan(planId);
+    setShowSubscriptionModal(true);
+  };
+
   const plans = [
     {
+      id: 'free',
       name: 'Free',
-      price: '$0',
+      price: '₹0',
       period: 'forever',
       description: 'Perfect for beginners to explore mindfulness',
       features: [
@@ -13,14 +29,16 @@ const Pricing = () => {
         'Basic breathing exercises',
         'One sleep story',
         'Mood tracking',
-        'Community access'
+        'Community access',
+        'Basic dating features'
       ],
       cta: 'Get Started',
       popular: false
     },
     {
+      id: 'monthly',
       name: 'Monthly',
-      price: '$14.99',
+      price: '₹499',
       period: 'per month',
       description: 'Full access to all premium content',
       features: [
@@ -30,24 +48,27 @@ const Pricing = () => {
         'Masterclasses',
         'Advanced progress tracking',
         'Offline downloads',
-        'Premium support'
+        'Premium support',
+        'Premium dating features'
       ],
       cta: 'Start 14-Day Trial',
       popular: true
     },
     {
+      id: 'annual',
       name: 'Annual',
-      price: '$69.99',
+      price: '₹2999',
       period: 'per year',
-      originalPrice: '$179.88',
-      description: 'Best value - save 61% with annual billing',
+      originalPrice: '₹5988',
+      description: 'Best value - save 50% with annual billing',
       features: [
         'Everything in Monthly',
         'Priority customer support',
         'Early access to new features',
         'Family sharing (up to 6 members)',
         'Exclusive content',
-        'Annual progress reports'
+        'Annual progress reports',
+        'Premium dating with priority matching'
       ],
       cta: 'Start 14-Day Trial',
       popular: false
@@ -115,8 +136,10 @@ const Pricing = () => {
                     ? 'bg-forest-600 text-white hover:bg-forest-700 transform hover:scale-105'
                     : 'border-2 border-forest-600 text-forest-600 hover:bg-forest-600 hover:text-white'
                 }`}
+                onClick={() => handlePlanSelect(plan.id)}
+                disabled={isPremium && plan.id !== 'free'}
               >
-                {plan.cta}
+                {isPremium && plan.id !== 'free' ? 'Current Plan' : plan.cta}
               </button>
             </div>
           ))}
@@ -140,6 +163,12 @@ const Pricing = () => {
           </div>
         </div>
       </div>
+
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        selectedPlan={selectedPlan}
+      />
     </section>
   );
 };
