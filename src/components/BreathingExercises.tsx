@@ -32,7 +32,7 @@ const BreathingExercises = () => {
       benefits: ['Reduces anxiety', 'Improves sleep', 'Lowers stress'],
       difficulty: 'beginner',
       audioUrl: 'https://www.soundjay.com/misc/sounds/breathing-1.wav',
-      backgroundMusic: 'https://www.soundjay.com/misc/sounds/calm-music-1.wav'
+      backgroundMusic: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
     },
     {
       id: '2',
@@ -47,7 +47,7 @@ const BreathingExercises = () => {
       benefits: ['Improves focus', 'Reduces stress', 'Enhances performance'],
       difficulty: 'intermediate',
       audioUrl: 'https://www.soundjay.com/misc/sounds/breathing-2.wav',
-      backgroundMusic: 'https://www.soundjay.com/misc/sounds/focus-music-1.wav'
+      backgroundMusic: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
     },
     {
       id: '3',
@@ -62,7 +62,7 @@ const BreathingExercises = () => {
       benefits: ['Increases energy', 'Boosts immunity', 'Improves resilience'],
       difficulty: 'advanced',
       audioUrl: 'https://www.soundjay.com/misc/sounds/breathing-3.wav',
-      backgroundMusic: 'https://www.soundjay.com/misc/sounds/energy-music-1.wav'
+      backgroundMusic: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
     },
     {
       id: '4',
@@ -77,7 +77,7 @@ const BreathingExercises = () => {
       benefits: ['Balances nervous system', 'Improves HRV', 'Reduces blood pressure'],
       difficulty: 'beginner',
       audioUrl: 'https://www.soundjay.com/misc/sounds/breathing-4.wav',
-      backgroundMusic: 'https://www.soundjay.com/misc/sounds/heart-music-1.wav'
+      backgroundMusic: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
     },
     {
       id: '5',
@@ -92,7 +92,7 @@ const BreathingExercises = () => {
       benefits: ['Balances brain hemispheres', 'Improves concentration', 'Calms mind'],
       difficulty: 'intermediate',
       audioUrl: 'https://www.soundjay.com/misc/sounds/breathing-5.wav',
-      backgroundMusic: 'https://www.soundjay.com/misc/sounds/yoga-music-1.wav'
+      backgroundMusic: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
     },
     {
       id: '6',
@@ -107,7 +107,7 @@ const BreathingExercises = () => {
       benefits: ['Increases alertness', 'Boosts metabolism', 'Energizes body'],
       difficulty: 'advanced',
       audioUrl: 'https://www.soundjay.com/misc/sounds/breathing-6.wav',
-      backgroundMusic: 'https://www.soundjay.com/misc/sounds/power-music-1.wav'
+      backgroundMusic: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
     }
   ]);
 
