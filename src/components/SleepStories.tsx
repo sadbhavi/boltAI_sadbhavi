@@ -22,7 +22,7 @@ const SleepStories = () => {
       narrator: 'Sarah Chen',
       description: 'Journey through a magical forest where ancient trees whisper secrets of peace and tranquility.',
       duration: 45,
-      audioUrl: 'https://www.soundjay.com/misc/sounds/story-1.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/1031641/pexels-photo-1031641.jpeg',
       category: 'fantasy',
       isPremium: false
@@ -33,7 +33,7 @@ const SleepStories = () => {
       narrator: 'Michael Rodriguez',
       description: 'Drift away on gentle waves as the ocean sings you to sleep with its eternal rhythm.',
       duration: 38,
-      audioUrl: 'https://www.soundjay.com/misc/sounds/story-2.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/1496373/pexels-photo-1496373.jpeg',
       category: 'nature',
       isPremium: true
@@ -44,7 +44,7 @@ const SleepStories = () => {
       narrator: 'Emily Watson',
       description: 'Find solace in a cozy mountain cabin where the crackling fire and gentle snowfall create perfect serenity.',
       duration: 52,
-      audioUrl: 'https://www.soundjay.com/misc/sounds/story-3.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/3822583/pexels-photo-3822583.jpeg',
       category: 'journey',
       isPremium: true
@@ -55,7 +55,7 @@ const SleepStories = () => {
       narrator: 'James Thompson',
       description: 'Explore a hidden garden where every flower holds a story and every breeze carries dreams.',
       duration: 41,
-      audioUrl: 'https://www.soundjay.com/misc/sounds/story-4.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/3759657/pexels-photo-3759657.jpeg',
       category: 'classic',
       isPremium: false
@@ -66,7 +66,7 @@ const SleepStories = () => {
       narrator: 'Luna Martinez',
       description: 'Board a mystical train that travels through the cosmos, visiting peaceful planets and starlit meadows.',
       duration: 47,
-      audioUrl: 'https://www.soundjay.com/misc/sounds/story-5.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg',
       category: 'fantasy',
       isPremium: true
@@ -77,7 +77,7 @@ const SleepStories = () => {
       narrator: 'David Park',
       description: 'Relive peaceful childhood memories in a quiet countryside where time moves slowly and worries fade away.',
       duration: 35,
-      audioUrl: 'https://www.soundjay.com/misc/sounds/story-6.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg',
       category: 'journey',
       isPremium: false

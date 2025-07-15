@@ -18,7 +18,7 @@ const SoundscapePlayer = () => {
       id: '1',
       title: 'Ocean Waves',
       description: 'Gentle waves lapping against the shore',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/ocean-wave-1.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/1496373/pexels-photo-1496373.jpeg',
       category: 'nature'
     },
@@ -26,7 +26,7 @@ const SoundscapePlayer = () => {
       id: '2',
       title: 'Forest Rain',
       description: 'Peaceful rainfall in a lush forest',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/rain-1.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/1031641/pexels-photo-1031641.jpeg',
       category: 'nature'
     },
@@ -34,7 +34,7 @@ const SoundscapePlayer = () => {
       id: '3',
       title: 'Mountain Stream',
       description: 'Babbling brook flowing through mountains',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/stream-1.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/3822583/pexels-photo-3822583.jpeg',
       category: 'nature'
     },
@@ -42,7 +42,7 @@ const SoundscapePlayer = () => {
       id: '4',
       title: 'Tibetan Bowls',
       description: 'Resonant singing bowls for deep meditation',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-1.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/3759657/pexels-photo-3759657.jpeg',
       category: 'ambient'
     },
@@ -50,7 +50,7 @@ const SoundscapePlayer = () => {
       id: '5',
       title: 'White Noise',
       description: 'Pure white noise for focus and concentration',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/white-noise-1.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg',
       category: 'white-noise'
     },
@@ -58,7 +58,7 @@ const SoundscapePlayer = () => {
       id: '6',
       title: 'Binaural Beats - Focus',
       description: '40Hz gamma waves for enhanced concentration',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/binaural-1.wav',
+      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image: 'https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg',
       category: 'binaural'
     }
