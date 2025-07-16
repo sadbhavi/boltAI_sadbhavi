@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Star } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import SubscriptionModal from './subscription/SubscriptionModal';
