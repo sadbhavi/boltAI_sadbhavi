@@ -42,6 +42,10 @@ const DatingApp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [profileCompletion, setProfileCompletion] = useState(45);
   const [viewMode, setViewMode] = useState<'grid' | 'cards'>('grid');
+  const [showChat, setShowChat] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
   
   // Login/Signup form state
   const [loginData, setLoginData] = useState({
@@ -419,7 +423,30 @@ const DatingApp = () => {
   const profilesPerPage = 6;
   const totalPages = Math.ceil(allProfiles.length / profilesPerPage);
   const startIndex = (currentPage - 1) * profilesPerPage;
-  const currentProfiles = allProfiles.slice(startIndex, startIndex + profilesPerPage);
+  
+  // Use filtered profiles if search is active, otherwise use all profiles
+  const profilesToShow = searchQuery ? filteredProfiles : allProfiles;
+  const currentProfiles = profilesToShow.slice(startIndex, startIndex + profilesPerPage);
+
+  // Search functionality
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const filtered = allProfiles.filter(profile =>
+        profile.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        profile.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        profile.profession.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        profile.interests.some(interest => 
+          interest.toLowerCase().includes(searchQuery.toLowerCase())
+        ) ||
+        profile.religion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        profile.community?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProfiles(filtered);
+      setCurrentPage(1); // Reset to first page when searching
+    } else {
+      setFilteredProfiles([]);
+    }
+  }, [searchQuery, allProfiles]);
 
   const relationshipGoals = [
     { id: 'fun', name: 'Fun/Casual Dating', description: 'Light-hearted connections and casual dates' },
@@ -754,6 +781,8 @@ const DatingApp = () => {
                 <input
                   type="text"
                   placeholder="Search profiles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="bg-transparent border-none outline-none text-sm"
                 />
               </div>
@@ -763,6 +792,7 @@ const DatingApp = () => {
               >
                 <Filter className="w-6 h-6" />
               </button>
+                onClick={() => setShowChat(true)}
               <button className="p-2 text-stone-600 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors relative">
                 <MessageCircle className="w-6 h-6" />
                 {matches.length > 0 && (
@@ -772,6 +802,7 @@ const DatingApp = () => {
                 )}
               </button>
               <button className="p-2 text-stone-600 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors">
+                onClick={() => setShowSettings(true)}
                 <Settings className="w-6 h-6" />
               </button>
             </div>
@@ -814,7 +845,12 @@ const DatingApp = () => {
               </button>
             </div>
             <div className="text-sm text-stone-600">
-              Showing {startIndex + 1}-{Math.min(startIndex + profilesPerPage, allProfiles.length)} of {allProfiles.length} profiles
+              Showing {startIndex + 1}-{Math.min(startIndex + profilesPerPage, profilesToShow.length)} of {profilesToShow.length} profiles
+              {searchQuery && (
+                <span className="ml-2 text-pink-600">
+                  (filtered by "{searchQuery}")
+                </span>
+              )}
             </div>
           </div>
           
@@ -965,7 +1001,8 @@ const DatingApp = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center items-center space-x-6 mb-8">
+        {profilesToShow.length > profilesPerPage && (
+          <div className="flex justify-center items-center space-x-6 mb-8">
           <button
             onClick={prevPage}
             disabled={currentPage === 1}
@@ -976,7 +1013,7 @@ const DatingApp = () => {
           </button>
           
           <div className="flex items-center space-x-2">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            {Array.from({ length: Math.ceil(profilesToShow.length / profilesPerPage) }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
@@ -993,13 +1030,14 @@ const DatingApp = () => {
           
           <button
             onClick={nextPage}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === Math.ceil(profilesToShow.length / profilesPerPage)}
             className="flex items-center space-x-2 px-6 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>Next</span>
             <ArrowRight className="w-5 h-5" />
           </button>
         </div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -1069,6 +1107,8 @@ const DatingApp = () => {
       {/* Modals */}
       {showFilters && <FilterModal />}
       {selectedProfile && <ProfileModal profile={selectedProfile} />}
+      {showChat && <ChatModal />}
+      {showSettings && <SettingsModal />}
     </div>
   );
 
