@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MapPin, Filter, Star, MessageCircle, X, Check, Camera, Settings, ArrowLeft, ArrowRight, Shield, Users, Globe, Award, Phone, Mail, Eye, EyeOff } from 'lucide-react';
+import { Heart, MapPin, Filter, Star, MessageCircle, X, Check, Camera, Settings, ArrowLeft, ArrowRight, Shield, Users, Globe, Award, Phone, Mail, Eye, EyeOff, Search, Zap, Crown, Gift } from 'lucide-react';
 
 interface Profile {
   id: string;
@@ -26,10 +26,13 @@ interface Profile {
     sign: string;
     manglik: boolean;
   };
+  isOnline?: boolean;
+  lastSeen?: string;
+  premium?: boolean;
 }
 
 const DatingApp = () => {
-  const [currentView, setCurrentView] = useState<'login' | 'onboarding' | 'profile-building' | 'main'>('login');
+  const [currentView, setCurrentView] = useState<'login' | 'onboarding' | 'profile-building' | 'main'>('main');
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const [matches, setMatches] = useState<Profile[]>([]);
@@ -38,6 +41,7 @@ const DatingApp = () => {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [showPassword, setShowPassword] = useState(false);
   const [profileCompletion, setProfileCompletion] = useState(45);
+  const [viewMode, setViewMode] = useState<'grid' | 'cards'>('grid');
   
   // Login/Signup form state
   const [loginData, setLoginData] = useState({
@@ -97,7 +101,9 @@ const DatingApp = () => {
       horoscope: {
         sign: 'Leo',
         manglik: false
-      }
+      },
+      isOnline: true,
+      premium: true
     },
     {
       id: '2',
@@ -126,7 +132,9 @@ const DatingApp = () => {
       horoscope: {
         sign: 'Virgo',
         manglik: true
-      }
+      },
+      isOnline: false,
+      lastSeen: '2 hours ago'
     },
     {
       id: '3',
@@ -150,9 +158,9 @@ const DatingApp = () => {
       dietaryPreference: 'vegetarian',
       smokingHabits: 'never',
       drinkingHabits: 'never',
-      familyType: 'joint'
+      familyType: 'joint',
+      isOnline: true
     },
-    // Page 2 Profiles
     {
       id: '4',
       name: 'Rahul Singh',
@@ -175,7 +183,10 @@ const DatingApp = () => {
       dietaryPreference: 'non-vegetarian',
       smokingHabits: 'occasionally',
       drinkingHabits: 'regularly',
-      familyType: 'nuclear'
+      familyType: 'nuclear',
+      isOnline: false,
+      lastSeen: '1 day ago',
+      premium: true
     },
     {
       id: '5',
@@ -199,7 +210,8 @@ const DatingApp = () => {
       dietaryPreference: 'vegetarian',
       smokingHabits: 'never',
       drinkingHabits: 'occasionally',
-      familyType: 'nuclear'
+      familyType: 'nuclear',
+      isOnline: true
     },
     {
       id: '6',
@@ -223,7 +235,173 @@ const DatingApp = () => {
       dietaryPreference: 'non-vegetarian',
       smokingHabits: 'never',
       drinkingHabits: 'occasionally',
-      familyType: 'nuclear'
+      familyType: 'nuclear',
+      isOnline: false,
+      lastSeen: '5 hours ago'
+    },
+    // Additional profiles for more variety
+    {
+      id: '7',
+      name: 'Ananya Iyer',
+      age: 27,
+      location: 'Chennai, Tamil Nadu',
+      images: [
+        'https://images.pexels.com/photos/3759657/pexels-photo-3759657.jpeg'
+      ],
+      bio: 'Classical singer and music teacher. Love Carnatic music, temple visits, and cooking traditional South Indian food. Looking for someone who appreciates culture.',
+      interests: ['Music', 'Singing', 'Cooking', 'Spirituality', 'Teaching'],
+      profession: 'Music Teacher',
+      education: 'M.A. Music',
+      religion: 'Hindu',
+      community: 'Iyer',
+      languages: ['Tamil', 'Hindi', 'English', 'Sanskrit'],
+      verified: true,
+      distance: 25,
+      compatibility: 93,
+      relationshipGoal: 'marriage',
+      dietaryPreference: 'vegetarian',
+      smokingHabits: 'never',
+      drinkingHabits: 'never',
+      familyType: 'joint',
+      horoscope: {
+        sign: 'Pisces',
+        manglik: false
+      },
+      isOnline: true
+    },
+    {
+      id: '8',
+      name: 'Rohan Kapoor',
+      age: 30,
+      location: 'Gurgaon, Haryana',
+      images: [
+        'https://images.pexels.com/photos/1031641/pexels-photo-1031641.jpeg'
+      ],
+      bio: 'Digital marketing expert and travel blogger. Love exploring new places, trying street food, and meeting new people. Adventure seeker at heart!',
+      interests: ['Travel', 'Blogging', 'Photography', 'Food', 'Adventure'],
+      profession: 'Digital Marketer',
+      education: 'B.Com + Digital Marketing',
+      religion: 'Hindu',
+      community: 'Kapoor',
+      languages: ['Hindi', 'English', 'Punjabi'],
+      verified: true,
+      distance: 8,
+      compatibility: 85,
+      relationshipGoal: 'fun',
+      dietaryPreference: 'non-vegetarian',
+      smokingHabits: 'occasionally',
+      drinkingHabits: 'regularly',
+      familyType: 'nuclear',
+      isOnline: false,
+      lastSeen: '3 hours ago',
+      premium: true
+    },
+    {
+      id: '9',
+      name: 'Meera Joshi',
+      age: 23,
+      location: 'Jaipur, Rajasthan',
+      images: [
+        'https://images.pexels.com/photos/1496373/pexels-photo-1496373.jpeg'
+      ],
+      bio: 'Fashion designer with a love for traditional Rajasthani crafts. Enjoy painting, horse riding, and exploring heritage sites. Family means everything to me.',
+      interests: ['Fashion', 'Design', 'Painting', 'Horse Riding', 'Heritage'],
+      profession: 'Fashion Designer',
+      education: 'NIFT Fashion Design',
+      religion: 'Hindu',
+      community: 'Joshi',
+      languages: ['Hindi', 'Rajasthani', 'English'],
+      verified: true,
+      distance: 35,
+      compatibility: 90,
+      relationshipGoal: 'serious',
+      dietaryPreference: 'vegetarian',
+      smokingHabits: 'never',
+      drinkingHabits: 'occasionally',
+      familyType: 'joint',
+      isOnline: true
+    },
+    {
+      id: '10',
+      name: 'Aditya Menon',
+      age: 32,
+      location: 'Thiruvananthapuram, Kerala',
+      images: [
+        'https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg'
+      ],
+      bio: 'Ayurvedic doctor passionate about holistic healing and yoga. Love nature, meditation, and helping people achieve wellness. Seeking a mindful partner.',
+      interests: ['Ayurveda', 'Yoga', 'Meditation', 'Nature', 'Wellness'],
+      profession: 'Ayurvedic Doctor',
+      education: 'BAMS',
+      religion: 'Hindu',
+      community: 'Menon',
+      languages: ['Malayalam', 'Hindi', 'English', 'Sanskrit'],
+      verified: true,
+      distance: 42,
+      compatibility: 94,
+      relationshipGoal: 'marriage',
+      dietaryPreference: 'vegetarian',
+      smokingHabits: 'never',
+      drinkingHabits: 'never',
+      familyType: 'joint',
+      horoscope: {
+        sign: 'Scorpio',
+        manglik: false
+      },
+      isOnline: false,
+      lastSeen: '1 hour ago'
+    },
+    {
+      id: '11',
+      name: 'Ishita Bansal',
+      age: 26,
+      location: 'Chandigarh, Punjab',
+      images: [
+        'https://images.pexels.com/photos/3822583/pexels-photo-3822583.jpeg'
+      ],
+      bio: 'CA by profession, dancer by passion. Love Bhangra, Punjabi music, and family gatherings. Looking for someone who can match my energy and values.',
+      interests: ['Dancing', 'Music', 'Finance', 'Family', 'Festivals'],
+      profession: 'Chartered Accountant',
+      education: 'CA',
+      religion: 'Sikh',
+      community: 'Bansal',
+      languages: ['Punjabi', 'Hindi', 'English'],
+      verified: true,
+      distance: 28,
+      compatibility: 86,
+      relationshipGoal: 'marriage',
+      dietaryPreference: 'vegetarian',
+      smokingHabits: 'never',
+      drinkingHabits: 'occasionally',
+      familyType: 'joint',
+      isOnline: true,
+      premium: true
+    },
+    {
+      id: '12',
+      name: 'Karthik Raman',
+      age: 29,
+      location: 'Coimbatore, Tamil Nadu',
+      images: [
+        'https://images.pexels.com/photos/1031641/pexels-photo-1031641.jpeg'
+      ],
+      bio: 'Software architect and part-time photographer. Love capturing moments, exploring temples, and South Indian classical music. Seeking a cultured partner.',
+      interests: ['Photography', 'Technology', 'Music', 'Temples', 'Culture'],
+      profession: 'Software Architect',
+      education: 'M.Tech Computer Science',
+      religion: 'Hindu',
+      community: 'Raman',
+      languages: ['Tamil', 'Hindi', 'English'],
+      verified: true,
+      distance: 18,
+      compatibility: 91,
+      relationshipGoal: 'serious',
+      dietaryPreference: 'vegetarian',
+      smokingHabits: 'never',
+      drinkingHabits: 'occasionally',
+      familyType: 'nuclear',
+      isOnline: false,
+      lastSeen: '6 hours ago'
     }
   ]);
 
@@ -238,7 +416,7 @@ const DatingApp = () => {
     dietaryPreference: ''
   });
 
-  const profilesPerPage = 3;
+  const profilesPerPage = 6;
   const totalPages = Math.ceil(allProfiles.length / profilesPerPage);
   const startIndex = (currentPage - 1) * profilesPerPage;
   const currentProfiles = allProfiles.slice(startIndex, startIndex + profilesPerPage);
@@ -306,374 +484,6 @@ const DatingApp = () => {
         : [...prev.interests, interest]
     }));
   };
-
-  // Login/Signup Component
-  const LoginComponent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8">
-        <div className="text-center mb-8">
-          <Heart className="w-12 h-12 text-pink-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-stone-800 mb-2">ConnectIndia</h1>
-          <p className="text-stone-600">Find your perfect match in India</p>
-        </div>
-
-        <div className="space-y-6">
-          {/* Login Method Toggle */}
-          <div className="flex bg-stone-100 rounded-lg p-1">
-            <button
-              onClick={() => setLoginData({...loginData, loginMethod: 'email'})}
-              className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-md transition-colors ${
-                loginData.loginMethod === 'email' ? 'bg-white shadow-sm' : ''
-              }`}
-            >
-              <Mail className="w-4 h-4" />
-              <span className="text-sm font-medium">Email</span>
-            </button>
-            <button
-              onClick={() => setLoginData({...loginData, loginMethod: 'phone'})}
-              className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-md transition-colors ${
-                loginData.loginMethod === 'phone' ? 'bg-white shadow-sm' : ''
-              }`}
-            >
-              <Phone className="w-4 h-4" />
-              <span className="text-sm font-medium">Phone</span>
-            </button>
-          </div>
-
-          {/* Social Login */}
-          <div className="space-y-3">
-            <button className="w-full flex items-center justify-center space-x-3 bg-white border-2 border-stone-200 rounded-xl py-3 hover:border-stone-300 transition-colors">
-              <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" className="w-5 h-5" />
-              <span className="font-medium text-stone-700">Continue with Google</span>
-            </button>
-            
-            <button className="w-full flex items-center justify-center space-x-3 bg-blue-600 text-white rounded-xl py-3 hover:bg-blue-700 transition-colors">
-              <Phone className="w-5 h-5" />
-              <span className="font-medium">Continue with TrueCaller</span>
-            </button>
-          </div>
-
-          <div className="flex items-center">
-            <div className="flex-1 border-t border-stone-200"></div>
-            <span className="px-4 text-sm text-stone-500">or</span>
-            <div className="flex-1 border-t border-stone-200"></div>
-          </div>
-
-          {/* Form Fields */}
-          <div className="space-y-4">
-            <input
-              type={loginData.loginMethod === 'email' ? 'email' : 'tel'}
-              placeholder={loginData.loginMethod === 'email' ? 'Enter your email' : 'Enter your phone number'}
-              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-              value={loginData.loginMethod === 'email' ? loginData.email : loginData.phone}
-              onChange={(e) => setLoginData({
-                ...loginData,
-                [loginData.loginMethod === 'email' ? 'email' : 'phone']: e.target.value
-              })}
-            />
-
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                className="w-full px-4 py-3 pr-12 border border-stone-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                value={loginData.password}
-                onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-stone-500"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={handleLogin}
-            className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-semibold hover:from-pink-600 hover:to-rose-600 transition-colors"
-          >
-            Sign In
-          </button>
-
-          <div className="text-center">
-            <span className="text-stone-600">Don't have an account? </span>
-            <button
-              onClick={() => setCurrentView('profile-building')}
-              className="text-pink-600 hover:text-pink-700 font-medium"
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Onboarding Component
-  const OnboardingComponent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-stone-800 mb-4">Welcome to ConnectIndia!</h2>
-          <p className="text-stone-600">Let's set up your preferences to find better matches</p>
-        </div>
-
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-3">What are you looking for?</label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {relationshipGoals.map((goal) => (
-                <button
-                  key={goal.id}
-                  onClick={() => setProfileData({...profileData, relationshipGoal: goal.id as any})}
-                  className={`p-4 border-2 rounded-xl text-left transition-colors ${
-                    profileData.relationshipGoal === goal.id
-                      ? 'border-pink-500 bg-pink-50'
-                      : 'border-stone-200 hover:border-stone-300'
-                  }`}
-                >
-                  <div className="font-semibold text-stone-800">{goal.name}</div>
-                  <div className="text-sm text-stone-600 mt-1">{goal.description}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-stone-700 mb-2">Age Range</label>
-              <select className="w-full px-3 py-2 border border-stone-200 rounded-lg">
-                <option>22-28</option>
-                <option>25-32</option>
-                <option>30-40</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-stone-700 mb-2">Distance</label>
-              <select className="w-full px-3 py-2 border border-stone-200 rounded-lg">
-                <option>Within 25 km</option>
-                <option>Within 50 km</option>
-                <option>Within 100 km</option>
-              </select>
-            </div>
-          </div>
-
-          <button
-            onClick={completeOnboarding}
-            className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-semibold hover:from-pink-600 hover:to-rose-600 transition-colors"
-          >
-            Continue to Profile Building
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Profile Building Component
-  const ProfileBuildingComponent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-3xl font-bold text-stone-800">Build Your Profile</h2>
-              <div className="text-sm text-stone-600">
-                {profileCompletion}% Complete
-              </div>
-            </div>
-            <div className="w-full bg-stone-200 rounded-full h-2">
-              <div 
-                className="bg-gradient-to-r from-pink-500 to-rose-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${profileCompletion}%` }}
-              ></div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Left Column */}
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-stone-700 mb-3">About You</label>
-                <textarea
-                  placeholder="Tell us about yourself, your hobbies, what makes you unique..."
-                  className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent h-32 resize-none"
-                  value={profileData.bio}
-                  onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-stone-700 mb-3">Interests</label>
-                <div className="flex flex-wrap gap-2">
-                  {availableInterests.map((interest) => (
-                    <button
-                      key={interest}
-                      onClick={() => toggleInterest(interest)}
-                      className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                        profileData.interests.includes(interest)
-                          ? 'bg-pink-500 text-white'
-                          : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
-                      }`}
-                    >
-                      {interest}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-2">Religion</label>
-                  <select 
-                    className="w-full px-3 py-2 border border-stone-200 rounded-lg"
-                    value={profileData.religion}
-                    onChange={(e) => setProfileData({...profileData, religion: e.target.value})}
-                  >
-                    <option value="">Select Religion</option>
-                    <option value="Hindu">Hindu</option>
-                    <option value="Muslim">Muslim</option>
-                    <option value="Christian">Christian</option>
-                    <option value="Sikh">Sikh</option>
-                    <option value="Buddhist">Buddhist</option>
-                    <option value="Jain">Jain</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-2">Community</label>
-                  <input
-                    type="text"
-                    placeholder="e.g., Brahmin, Patel"
-                    className="w-full px-3 py-2 border border-stone-200 rounded-lg"
-                    value={profileData.community}
-                    onChange={(e) => setProfileData({...profileData, community: e.target.value})}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-stone-700 mb-3">Lifestyle Preferences</label>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs text-stone-600 mb-1">Dietary Preference</label>
-                    <select 
-                      className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm"
-                      value={profileData.dietaryPreference}
-                      onChange={(e) => setProfileData({...profileData, dietaryPreference: e.target.value as any})}
-                    >
-                      <option value="vegetarian">Vegetarian</option>
-                      <option value="non-vegetarian">Non-Vegetarian</option>
-                      <option value="vegan">Vegan</option>
-                      <option value="jain">Jain</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-xs text-stone-600 mb-1">Smoking Habits</label>
-                    <select 
-                      className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm"
-                      value={profileData.smokingHabits}
-                      onChange={(e) => setProfileData({...profileData, smokingHabits: e.target.value as any})}
-                    >
-                      <option value="never">Never</option>
-                      <option value="occasionally">Occasionally</option>
-                      <option value="regularly">Regularly</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-xs text-stone-600 mb-1">Drinking Habits</label>
-                    <select 
-                      className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm"
-                      value={profileData.drinkingHabits}
-                      onChange={(e) => setProfileData({...profileData, drinkingHabits: e.target.value as any})}
-                    >
-                      <option value="never">Never</option>
-                      <option value="occasionally">Occasionally</option>
-                      <option value="regularly">Regularly</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-stone-700 mb-3">Family & Cultural Details</label>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs text-stone-600 mb-1">Family Type</label>
-                    <select 
-                      className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm"
-                      value={profileData.familyType}
-                      onChange={(e) => setProfileData({...profileData, familyType: e.target.value as any})}
-                    >
-                      <option value="nuclear">Nuclear Family</option>
-                      <option value="joint">Joint Family</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-xs text-stone-600 mb-1">Horoscope Sign (Optional)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Leo, Virgo"
-                      className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm"
-                      value={profileData.horoscope.sign}
-                      onChange={(e) => setProfileData({
-                        ...profileData,
-                        horoscope: {...profileData.horoscope, sign: e.target.value}
-                      })}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="manglik"
-                      checked={profileData.horoscope.manglik}
-                      onChange={(e) => setProfileData({
-                        ...profileData,
-                        horoscope: {...profileData.horoscope, manglik: e.target.checked}
-                      })}
-                      className="rounded border-stone-300"
-                    />
-                    <label htmlFor="manglik" className="text-sm text-stone-700">Manglik</label>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-stone-700 mb-3">Photo Upload</label>
-                <div className="border-2 border-dashed border-stone-300 rounded-xl p-8 text-center hover:border-pink-400 transition-colors cursor-pointer">
-                  <Camera className="w-12 h-12 text-stone-400 mx-auto mb-4" />
-                  <p className="text-stone-600 mb-2">Upload your photos</p>
-                  <p className="text-sm text-stone-500">Add up to 6 photos. First photo will be your main profile picture.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 flex justify-between">
-            <button
-              onClick={() => setCurrentView('onboarding')}
-              className="px-6 py-3 border border-stone-300 text-stone-700 rounded-xl hover:bg-stone-50 transition-colors"
-            >
-              Back
-            </button>
-            <button
-              onClick={completeProfileBuilding}
-              className="px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-semibold hover:from-pink-600 hover:to-rose-600 transition-colors"
-            >
-              Complete Profile
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   // Filter Modal
   const FilterModal = () => (
@@ -801,17 +611,31 @@ const DatingApp = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-2xl font-bold text-stone-800">{profile.name}, {profile.age}</h2>
+                <div className="flex items-center space-x-2 mb-1">
+                  <h2 className="text-2xl font-bold text-stone-800">{profile.name}, {profile.age}</h2>
+                  {profile.isOnline && (
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  )}
+                </div>
                 <div className="flex items-center space-x-2 text-stone-600">
                   <MapPin className="w-4 h-4" />
                   <span>{profile.location} • {profile.distance}km away</span>
                 </div>
+                {!profile.isOnline && profile.lastSeen && (
+                  <p className="text-sm text-stone-500">Last seen {profile.lastSeen}</p>
+                )}
               </div>
               <div className="flex items-center space-x-2">
                 {profile.verified && (
                   <div className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs flex items-center space-x-1">
                     <Check className="w-3 h-3" />
                     <span>Verified</span>
+                  </div>
+                )}
+                {profile.premium && (
+                  <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-1 rounded-full text-xs flex items-center space-x-1">
+                    <Crown className="w-3 h-3" />
+                    <span>Premium</span>
                   </div>
                 )}
                 <div className="flex items-center space-x-1">
@@ -824,7 +648,7 @@ const DatingApp = () => {
             <div className="mb-6">
               <div className="flex items-center space-x-2 mb-2">
                 <Heart className="w-4 h-4 text-pink-500" />
-                <span className="text-sm font-medium text-stone-700">Looking for: {profile.relationshipGoal}</span>
+                <span className="text-sm font-medium text-stone-700 capitalize">Looking for: {profile.relationshipGoal}</span>
               </div>
               <p className="text-stone-600 leading-relaxed">{profile.bio}</p>
             </div>
@@ -910,26 +734,44 @@ const DatingApp = () => {
 
   // Main Dating App Component
   const MainDatingApp = () => (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-pink-100 sticky top-0 z-40">
+      <div className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-pink-100 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-2">
-              <Heart className="w-8 h-8 text-pink-500" />
-              <span className="text-xl font-bold text-stone-800">ConnectIndia</span>
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <span className="text-xl font-bold text-stone-800">ConnectIndia</span>
+                <p className="text-xs text-stone-600">Find your perfect match</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="hidden md:flex items-center space-x-2 bg-stone-100 rounded-full px-4 py-2">
+                <Search className="w-4 h-4 text-stone-500" />
+                <input
+                  type="text"
+                  placeholder="Search profiles..."
+                  className="bg-transparent border-none outline-none text-sm"
+                />
+              </div>
               <button
                 onClick={() => setShowFilters(true)}
-                className="p-2 text-stone-600 hover:text-pink-600"
+                className="p-2 text-stone-600 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors"
               >
                 <Filter className="w-6 h-6" />
               </button>
-              <button className="p-2 text-stone-600 hover:text-pink-600">
+              <button className="p-2 text-stone-600 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors relative">
                 <MessageCircle className="w-6 h-6" />
+                {matches.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    {matches.length}
+                  </span>
+                )}
               </button>
-              <button className="p-2 text-stone-600 hover:text-pink-600">
+              <button className="p-2 text-stone-600 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors">
                 <Settings className="w-6 h-6" />
               </button>
             </div>
@@ -941,8 +783,45 @@ const DatingApp = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-stone-800 mb-2">Discover Your Perfect Match</h1>
-          <p className="text-stone-600">Find meaningful connections with people who share your values</p>
+          <h1 className="text-4xl font-bold text-stone-800 mb-2">
+            Discover Your{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">
+              Perfect Match
+            </span>
+          </h1>
+          <p className="text-stone-600 text-lg">Find meaningful connections with people who share your values and dreams</p>
+        </div>
+
+        {/* View Toggle */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center space-x-4">
+            <div className="bg-white rounded-full p-1 shadow-md">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  viewMode === 'grid' ? 'bg-pink-500 text-white' : 'text-stone-600'
+                }`}
+              >
+                Grid View
+              </button>
+              <button
+                onClick={() => setViewMode('cards')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  viewMode === 'cards' ? 'bg-pink-500 text-white' : 'text-stone-600'
+                }`}
+              >
+                Card View
+              </button>
+            </div>
+            <div className="text-sm text-stone-600">
+              Showing {startIndex + 1}-{Math.min(startIndex + profilesPerPage, allProfiles.length)} of {allProfiles.length} profiles
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Zap className="w-4 h-4 text-yellow-500" />
+            <span className="text-sm font-medium text-stone-700">{matches.length} matches today</span>
+          </div>
         </div>
 
         {/* Safety Banner */}
@@ -957,11 +836,13 @@ const DatingApp = () => {
         </div>
 
         {/* Profile Cards Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className={`grid gap-6 mb-8 ${
+          viewMode === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2'
+        }`}>
           {currentProfiles.map((profile) => (
             <div
               key={profile.id}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+              className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer group"
               onClick={() => setSelectedProfile(profile)}
             >
               {/* Image */}
@@ -969,59 +850,81 @@ const DatingApp = () => {
                 <img
                   src={profile.images[0]}
                   alt={profile.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute top-4 right-4 flex space-x-2">
+                
+                {/* Online Status */}
+                {profile.isOnline && (
+                  <div className="absolute top-4 left-4">
+                    <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                      <span>Online</span>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Badges */}
+                <div className="absolute top-4 right-4 flex flex-col space-y-2">
                   {profile.verified && (
                     <div className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs flex items-center space-x-1">
                       <Check className="w-3 h-3" />
                       <span>Verified</span>
                     </div>
                   )}
-                  <div className="bg-white bg-opacity-90 px-2 py-1 rounded-full text-xs font-medium">
+                  {profile.premium && (
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-1 rounded-full text-xs flex items-center space-x-1">
+                      <Crown className="w-3 h-3" />
+                      <span>Premium</span>
+                    </div>
+                  )}
+                  <div className="bg-white bg-opacity-90 px-2 py-1 rounded-full text-xs font-medium capitalize">
                     {profile.relationshipGoal}
                   </div>
                 </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-black bg-opacity-50 rounded-xl p-4 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xl font-bold">{profile.name}, {profile.age}</h3>
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                        <span className="text-sm">{profile.compatibility}%</span>
-                      </div>
+                
+                {/* Profile Info Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-2xl font-bold">{profile.name}, {profile.age}</h3>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                      <span className="text-sm font-medium">{profile.compatibility}%</span>
                     </div>
-                    <div className="flex items-center space-x-1 text-sm">
-                      <MapPin className="w-4 h-4" />
-                      <span>{profile.location} • {profile.distance}km away</span>
-                    </div>
+                  </div>
+                  <div className="flex items-center space-x-1 text-sm mb-2">
+                    <MapPin className="w-4 h-4" />
+                    <span>{profile.location} • {profile.distance}km away</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-xs">
+                    <span className="bg-white/20 px-2 py-1 rounded-full">{profile.profession}</span>
+                    <span className="bg-white/20 px-2 py-1 rounded-full">{profile.dietaryPreference}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Profile Info */}
+              {/* Profile Details */}
               <div className="p-6">
-                <p className="text-stone-600 mb-4 line-clamp-2">{profile.bio}</p>
+                <p className="text-stone-600 mb-4 line-clamp-2 leading-relaxed">{profile.bio}</p>
                 
                 <div className="mb-4">
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div><span className="text-stone-500">Profession:</span> {profile.profession}</div>
                     <div><span className="text-stone-500">Education:</span> {profile.education}</div>
                     <div><span className="text-stone-500">Religion:</span> {profile.religion}</div>
-                    <div><span className="text-stone-500">Diet:</span> {profile.dietaryPreference}</div>
+                    <div><span className="text-stone-500">Community:</span> {profile.community}</div>
+                    <div><span className="text-stone-500">Family:</span> {profile.familyType}</div>
                   </div>
                 </div>
 
-                <div className="mb-4">
+                <div className="mb-6">
                   <div className="flex flex-wrap gap-2">
-                    {profile.interests.slice(0, 3).map((interest, index) => (
+                    {profile.interests.slice(0, 4).map((interest, index) => (
                       <span key={index} className="bg-pink-100 text-pink-700 px-2 py-1 rounded-full text-xs">
                         {interest}
                       </span>
                     ))}
-                    {profile.interests.length > 3 && (
+                    {profile.interests.length > 4 && (
                       <span className="bg-stone-100 text-stone-600 px-2 py-1 rounded-full text-xs">
-                        +{profile.interests.length - 3} more
+                        +{profile.interests.length - 4} more
                       </span>
                     )}
                   </div>
@@ -1044,16 +947,16 @@ const DatingApp = () => {
                       e.stopPropagation();
                       handleLike(profile);
                     }}
-                    className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform"
+                    className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg"
                   >
                     <Heart className="w-8 h-8 fill-current" />
                   </button>
                   
                   <button
                     onClick={(e) => e.stopPropagation()}
-                    className="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center hover:bg-blue-300 transition-colors"
+                    className="w-12 h-12 bg-yellow-200 rounded-full flex items-center justify-center hover:bg-yellow-300 transition-colors"
                   >
-                    <Star className="w-6 h-6 text-blue-600" />
+                    <Gift className="w-6 h-6 text-yellow-600" />
                   </button>
                 </div>
               </div>
@@ -1062,7 +965,7 @@ const DatingApp = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center items-center space-x-6">
+        <div className="flex justify-center items-center space-x-6 mb-8">
           <button
             onClick={prevPage}
             disabled={currentPage === 1}
@@ -1079,7 +982,7 @@ const DatingApp = () => {
                 onClick={() => setCurrentPage(page)}
                 className={`w-10 h-10 rounded-full font-medium transition-colors ${
                   currentPage === page
-                    ? 'bg-pink-500 text-white'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white'
                     : 'bg-white text-stone-600 hover:bg-pink-100'
                 }`}
               >
@@ -1099,34 +1002,65 @@ const DatingApp = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 mt-12">
-          <div className="bg-white rounded-2xl p-6 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
             <Users className="w-8 h-8 text-pink-500 mx-auto mb-2" />
             <div className="text-2xl font-bold text-stone-800">10M+</div>
             <div className="text-sm text-stone-600">Active Users</div>
           </div>
-          <div className="bg-white rounded-2xl p-6 text-center">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
             <Heart className="w-8 h-8 text-pink-500 mx-auto mb-2" />
             <div className="text-2xl font-bold text-stone-800">2M+</div>
             <div className="text-sm text-stone-600">Matches Made</div>
           </div>
-          <div className="bg-white rounded-2xl p-6 text-center">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
             <Award className="w-8 h-8 text-pink-500 mx-auto mb-2" />
             <div className="text-2xl font-bold text-stone-800">50K+</div>
             <div className="text-sm text-stone-600">Success Stories</div>
           </div>
-          <div className="bg-white rounded-2xl p-6 text-center">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
             <Globe className="w-8 h-8 text-pink-500 mx-auto mb-2" />
             <div className="text-2xl font-bold text-stone-800">500+</div>
             <div className="text-sm text-stone-600">Cities</div>
           </div>
         </div>
 
+        {/* Success Stories Section */}
+        <div className="bg-white rounded-3xl p-8 shadow-xl mb-8">
+          <h2 className="text-2xl font-bold text-center text-stone-800 mb-6">Success Stories</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="w-8 h-8 text-white fill-current" />
+              </div>
+              <h3 className="font-semibold text-stone-800 mb-2">Raj & Priya</h3>
+              <p className="text-sm text-stone-600">"Found my soulmate through ConnectIndia. Our families are so happy!"</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="w-8 h-8 text-white fill-current" />
+              </div>
+              <h3 className="font-semibold text-stone-800 mb-2">Arjun & Sneha</h3>
+              <p className="text-sm text-stone-600">"Perfect match based on our cultural values and life goals."</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="w-8 h-8 text-white fill-current" />
+              </div>
+              <h3 className="font-semibold text-stone-800 mb-2">Vikram & Kavya</h3>
+              <p className="text-sm text-stone-600">"Started as friends, now planning our wedding. Thank you ConnectIndia!"</p>
+            </div>
+          </div>
+        </div>
+
         {/* Matches Counter */}
         {matches.length > 0 && (
-          <div className="text-center mt-8">
-            <div className="bg-white rounded-full px-6 py-3 inline-block shadow-md">
-              <span className="text-pink-600 font-semibold">{matches.length} matches today!</span>
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full px-8 py-4 inline-block shadow-lg">
+              <div className="flex items-center space-x-2">
+                <Zap className="w-5 h-5" />
+                <span className="font-semibold text-lg">{matches.length} matches today! 🎉</span>
+              </div>
             </div>
           </div>
         )}
@@ -1139,15 +1073,7 @@ const DatingApp = () => {
   );
 
   // Render based on current view
-  if (currentView === 'login') {
-    return <LoginComponent />;
-  } else if (currentView === 'onboarding') {
-    return <OnboardingComponent />;
-  } else if (currentView === 'profile-building') {
-    return <ProfileBuildingComponent />;
-  } else {
-    return <MainDatingApp />;
-  }
+  return <MainDatingApp />;
 };
 
 export default DatingApp;
