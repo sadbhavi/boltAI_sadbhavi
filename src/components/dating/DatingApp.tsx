@@ -46,6 +46,18 @@ const DatingApp = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
+  const [selectedMatch, setSelectedMatch] = useState<Profile | null>(null);
+  const [messages, setMessages] = useState<Record<string, Array<{id: string, text: string, sender: 'user' | 'match', timestamp: Date}>>>({});
+  const [newMessage, setNewMessage] = useState('');
+  const [settings, setSettings] = useState({
+    profileVisibility: true,
+    showOnlineStatus: true,
+    allowMessages: true,
+    pushNotifications: true,
+    emailNotifications: false,
+    showDistance: true,
+    autoRenew: false
+  });
   
   // Login/Signup form state
   const [loginData, setLoginData] = useState({
@@ -448,6 +460,30 @@ const DatingApp = () => {
     }
   }, [searchQuery, allProfiles]);
 
+  // Initialize some sample messages for demo
+  useEffect(() => {
+    if (matches.length > 0 && Object.keys(messages).length === 0) {
+      const sampleMessages: Record<string, Array<{id: string, text: string, sender: 'user' | 'match', timestamp: Date}>> = {};
+      matches.forEach(match => {
+        sampleMessages[match.id] = [
+          {
+            id: '1',
+            text: `Hi! I saw we matched. I love your profile! 😊`,
+            sender: 'match',
+            timestamp: new Date(Date.now() - 3600000)
+          },
+          {
+            id: '2',
+            text: `Thank you! I'd love to get to know you better.`,
+            sender: 'user',
+            timestamp: new Date(Date.now() - 1800000)
+          }
+        ];
+      });
+      setMessages(sampleMessages);
+    }
+  }, [matches]);
+
   const relationshipGoals = [
     { id: 'fun', name: 'Fun/Casual Dating', description: 'Light-hearted connections and casual dates' },
     { id: 'friendship', name: 'Friendship', description: 'Building platonic relationships' },
@@ -509,6 +545,54 @@ const DatingApp = () => {
       interests: prev.interests.includes(interest)
         ? prev.interests.filter(i => i !== interest)
         : [...prev.interests, interest]
+    }));
+  };
+
+  const sendMessage = () => {
+    if (!newMessage.trim() || !selectedMatch) return;
+    
+    const messageId = Date.now().toString();
+    const newMsg = {
+      id: messageId,
+      text: newMessage.trim(),
+      sender: 'user' as const,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => ({
+      ...prev,
+      [selectedMatch.id]: [...(prev[selectedMatch.id] || []), newMsg]
+    }));
+    
+    setNewMessage('');
+    
+    // Simulate match response after 2 seconds
+    setTimeout(() => {
+      const responses = [
+        "That sounds great! 😊",
+        "I'd love to hear more about that!",
+        "Interesting! Tell me more.",
+        "That's so cool! I love that too.",
+        "Absolutely! When would be good for you?"
+      ];
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      
+      setMessages(prev => ({
+        ...prev,
+        [selectedMatch.id]: [...(prev[selectedMatch.id] || []), {
+          id: (Date.now() + 1).toString(),
+          text: randomResponse,
+          sender: 'match',
+          timestamp: new Date()
+        }]
+      }));
+    }, 2000);
+  };
+
+  const updateSetting = (key: string, value: boolean) => {
+    setSettings(prev => ({
+      ...prev,
+      [key]: value
     }));
   };
 
@@ -836,6 +920,7 @@ const DatingApp = () => {
                 Grid View
               </button>
               <button
+                onClick={() => setShowChat(true)}
                 onClick={() => setViewMode('cards')}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   viewMode === 'cards' ? 'bg-pink-500 text-white' : 'text-stone-600'
@@ -1015,6 +1100,7 @@ const DatingApp = () => {
           <div className="flex items-center space-x-2">
             {Array.from({ length: Math.ceil(profilesToShow.length / profilesPerPage) }, (_, i) => i + 1).map((page) => (
               <button
+                onClick={() => setShowSettings(true)}
                 key={page}
                 onClick={() => setCurrentPage(page)}
                 className={`w-10 h-10 rounded-full font-medium transition-colors ${
