@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, MapPin, Filter, Star, MessageCircle, X, Check, Camera, Settings, ArrowLeft, ArrowRight, Shield, Users, Globe, Award, Phone, Mail, Eye, EyeOff, Search, Zap, Crown, Gift } from 'lucide-react';
 
 interface Profile {
