@@ -11,6 +11,7 @@ import Blog from './components/Blog';
 import Download from './components/Download';
 import Footer from './components/Footer';
 import DatingApp from './components/dating/DatingApp';
+import EmotionalSupport from './components/EmotionalSupport';
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
       <Blog />
       <section id="dating">
         <DatingApp />
+      </section>
+      <section id="emotional-support">
+        <EmotionalSupport />
       </section>
       <Download />
       <Footer />

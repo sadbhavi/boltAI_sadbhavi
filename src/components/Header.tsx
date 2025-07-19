@@ -41,6 +41,7 @@ const Header = () => {
                 <Heart className="w-4 h-4" />
                 <span>Dating</span>
               </a>
+              <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
               
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -95,6 +96,7 @@ const Header = () => {
                   <Heart className="w-4 h-4" />
                   <span>Dating</span>
                 </a>
+                <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
                 
                 {user ? (
                   <div className="space-y-4">
