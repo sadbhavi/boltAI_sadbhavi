@@ -4,7 +4,11 @@ import { useAuth } from '../hooks/useAuth';
 import AuthModal from './auth/AuthModal';
 import SubscriptionModal from './subscription/SubscriptionModal';
 
-const Header = () => {
+interface HeaderProps {
+  onAuthClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
@@ -12,8 +16,12 @@ const Header = () => {
   const { user, signOut, isPremium } = useAuth();
 
   const handleAuthClick = (mode: 'login' | 'signup') => {
-    setAuthMode(mode);
-    setShowAuthModal(true);
+    if (onAuthClick) {
+      onAuthClick();
+    } else {
+      setAuthMode(mode);
+      setShowAuthModal(true);
+    }
   };
 
   const handleSignOut = async () => {
