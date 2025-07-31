@@ -170,3 +170,27 @@ export interface MoodTracking {
   tracking_date: string;
   created_at: string;
 }
+
+export interface DatingMessage {
+  id: string;
+  match_id: string;
+  sender_id: string;
+  content: string;
+  message_type: 'text' | 'image' | 'emoji';
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface DatingSetting {
+  id: string;
+  user_id: string;
+  profile_visibility: boolean;
+  show_online_status: boolean;
+  allow_messages: boolean;
+  push_notifications: boolean;
+  email_notifications: boolean;
+  show_distance: boolean;
+  auto_renew: boolean;
+  created_at: string;
+  updated_at: string;
+}
