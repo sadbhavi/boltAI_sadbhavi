@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Phone, Heart, Shield, Clock, User, Send, Mic, MicOff, PhoneCall, Calendar, Star, CheckCircle, Users, Globe, Award } from 'lucide-react';
+import { MessageCircle, Phone, Heart, Shield, Clock, User, Send, Mic, MicOff, PhoneCall, Calendar, Star, CheckCircle, Users, Globe } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import SubscriptionModal from './subscription/SubscriptionModal';
 
 interface Message {
   id: string;
@@ -32,9 +34,28 @@ const EmotionalSupport = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [supportRating, setSupportRating] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [messageCount, setMessageCount] = useState(() => {
+    const stored = localStorage.getItem('messageCount');
+    return stored ? parseInt(stored, 10) : 0;
+  });
+  const [freeCallUsed, setFreeCallUsed] = useState(() => {
+    return localStorage.getItem('freeCallUsed') === 'true';
+  });
+
+  const { isPremium } = useAuth();
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
+
+  // Persist usage info
+  useEffect(() => {
+    localStorage.setItem('messageCount', messageCount.toString());
+  }, [messageCount]);
+
+  useEffect(() => {
+    localStorage.setItem('freeCallUsed', freeCallUsed.toString());
+  }, [freeCallUsed]);
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -59,14 +80,26 @@ const EmotionalSupport = () => {
   useEffect(() => {
     if (callSession?.status === 'connected') {
       const timer = setInterval(() => {
-        setCallSession(prev => prev ? {
-          ...prev,
-          duration: prev.duration + 1
-        } : null);
+        setCallSession(prev =>
+          prev
+            ? {
+                ...prev,
+                duration: prev.duration + 1,
+              }
+            : null,
+        );
       }, 1000);
       return () => clearInterval(timer);
     }
   }, [callSession?.status]);
+
+  useEffect(() => {
+    if (!isPremium && callSession?.status === 'connected' && callSession.duration >= 600) {
+      alert('Free call limit reached. Please subscribe to continue.');
+      endCall();
+      setShowSubscriptionModal(true);
+    }
+  }, [callSession?.duration, callSession?.status, isPremium]);
 
   const startChat = () => {
     setShowChat(true);
@@ -78,6 +111,11 @@ const EmotionalSupport = () => {
   const sendMessage = () => {
     if (!newMessage.trim()) return;
 
+    if (!isPremium && messageCount >= 10) {
+      setShowSubscriptionModal(true);
+      return;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       text: newMessage,
@@ -88,6 +126,7 @@ const EmotionalSupport = () => {
 
     setMessages(prev => [...prev, userMessage]);
     setNewMessage('');
+    setMessageCount((c) => c + 1);
 
     // Simulate support response
     setTimeout(() => {
@@ -112,6 +151,14 @@ const EmotionalSupport = () => {
   };
 
   const startAudioCall = () => {
+    if (!isPremium && freeCallUsed) {
+      setShowSubscriptionModal(true);
+      return;
+    }
+
+    if (!isPremium && !freeCallUsed) {
+      setFreeCallUsed(true);
+    }
     setCallSession({
       id: Date.now().toString(),
       status: 'connecting',
@@ -587,6 +634,10 @@ const EmotionalSupport = () => {
           </div>
         </div>
       )}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
     </section>
   );
 };
