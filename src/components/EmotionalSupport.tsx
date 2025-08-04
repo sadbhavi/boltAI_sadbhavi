@@ -157,7 +157,9 @@ const EmotionalSupport = () => {
     if (!isPremium && !freeCallUsed) {
       setFreeCallUsed(true);
     }
-    window.open('tel:6394255782');
+    if (typeof window !== 'undefined') {
+      window.location.href = 'tel:6394255782';
+    }
 
     setCallSession({
       id: Date.now().toString(),
