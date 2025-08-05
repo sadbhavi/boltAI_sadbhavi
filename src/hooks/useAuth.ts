@@ -58,6 +58,13 @@ export function useAuth() {
     return { data, error };
   };
 
+  const signInWithGoogle = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+    return { data, error };
+  };
+
   const signOut = async () => {
     const { error } = await authAPI.signOut();
     if (!error) {
@@ -83,6 +90,7 @@ export function useAuth() {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
     updateProfile,
     isAuthenticated: !!user,
