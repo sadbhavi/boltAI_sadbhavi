@@ -40,7 +40,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
     language: 'en'
   });
 
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithGoogle } = useAuth();
 
   const languages = [
     { code: 'en', name: 'English', native: 'English' },
@@ -92,17 +92,8 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      // Simulate Google OAuth flow
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In real implementation, use Google OAuth 2.0
-      const googleUser = {
-        email: 'user@gmail.com',
-        name: 'John Doe',
-        picture: 'https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg'
-      };
-      
-      console.log('Google login successful:', googleUser);
+      const { error } = await signInWithGoogle();
+      if (error) throw error;
       onLoginSuccess();
       onClose();
     } catch (err) {

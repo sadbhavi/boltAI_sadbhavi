@@ -16,6 +16,7 @@ import EmotionalSupport from './components/EmotionalSupport';
 import AuthSystem from './components/auth/AuthSystem';
 import UserFlow from './components/UserFlow';
 import SurroundingListing from './components/SurroundingListing';
+import IndianChatAgent from './components/IndianChatAgent';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,6 +55,9 @@ function App() {
         <section id="nearby">
           <SurroundingListing />
         </section>
+        <section id="ai-agent">
+          <IndianChatAgent />
+        </section>
         <Footer />
       </div>
     );
@@ -76,6 +80,9 @@ function App() {
       </section>
       <section id="emotional-support">
         <EmotionalSupport />
+      </section>
+      <section id="ai-agent">
+        <IndianChatAgent />
       </section>
       <Download />
       <Footer />
