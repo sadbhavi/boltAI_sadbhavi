@@ -19,17 +19,15 @@ interface CallSession {
 }
 
 const EmotionalSupport = () => {
-  const [showChat, setShowChat] = useState(false);
-  const [showCallInterface, setShowCallInterface] = useState(false);
-  const [showScheduler, setShowScheduler] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [userContext, setUserContext] = useState('');
-  const [userName, setUserName] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(true);
-  const [callSession, setCallSession] = useState<CallSession | null>(null);
-  const [isMuted, setIsMuted] = useState(false);
+    const [showChat, setShowChat] = useState(false);
+    const [showCallInterface, setShowCallInterface] = useState(false);
+    const [showScheduler, setShowScheduler] = useState(false);
+    const [isOnline] = useState(true);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [newMessage, setNewMessage] = useState('');
+    const [userContext, setUserContext] = useState('');
+    const [callSession, setCallSession] = useState<CallSession | null>(null);
+    const [isMuted, setIsMuted] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [supportRating, setSupportRating] = useState(0);
@@ -74,7 +72,7 @@ const EmotionalSupport = () => {
       };
       setMessages([welcomeMessage]);
     }
-  }, [showChat]);
+    }, [showChat, messages.length]);
 
   // Simulate call timer
   useEffect(() => {
@@ -159,6 +157,10 @@ const EmotionalSupport = () => {
     if (!isPremium && !freeCallUsed) {
       setFreeCallUsed(true);
     }
+    if (typeof window !== 'undefined') {
+      window.location.href = 'tel:6394255782';
+    }
+   main
     setCallSession({
       id: Date.now().toString(),
       status: 'connecting',
@@ -169,7 +171,7 @@ const EmotionalSupport = () => {
 
     // Simulate connection
     setTimeout(() => {
-      setCallSession(prev => prev ? { ...prev, status: 'connected' } : null);
+      setCallSession(prev => (prev ? { ...prev, status: 'connected' } : null));
     }, 3000);
   };
 
