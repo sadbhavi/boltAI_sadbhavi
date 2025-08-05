@@ -24,7 +24,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
   const [error, setError] = useState('');
   const [otpSent, setOtpSent] = useState(false);
 
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithGoogle } = useAuth();
 
   if (!isOpen) return null;
 
@@ -59,9 +59,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
     }
   };
 
-  const handleGoogleLogin = () => {
-    // Google OAuth integration would go here
-    console.log('Google login clicked');
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) throw error;
+      onClose();
+    } catch (err: any) {
+      setError(err.message || 'Google login failed');
+    }
   };
 
   const handleTrueCallerLogin = () => {
