@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+type RecordingEvent = Event & { data: Blob };
 
 interface Message {
   role: 'user' | 'assistant';
@@ -9,6 +11,26 @@ const IndianChatAgent: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let recorder: MediaRecorder | undefined;
+    const setupRecorder = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        recorder = new MediaRecorder(stream);
+        recorder.ondataavailable = (event: RecordingEvent) => {
+          // placeholder for handling recorded audio data
+          event.data.arrayBuffer();
+        };
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    setupRecorder();
+    return () => {
+      recorder?.stream.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
