@@ -9,6 +9,7 @@ const IndianChatAgent: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -16,6 +17,7 @@ const IndianChatAgent: React.FC = () => {
     setMessages(newMessages);
     setInput('');
     setLoading(true);
+    setError(null);
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -35,20 +37,92 @@ const IndianChatAgent: React.FC = () => {
           ],
         }),
       });
-      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`Chat request failed: ${response.status}`);
+      }
+
+      let data: any;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error('Invalid JSON in chat response');
+      }
+
       const aiMessage = data.choices?.[0]?.message?.content?.trim();
       if (aiMessage) {
         setMessages([...newMessages, { role: 'assistant', content: aiMessage }]);
+        await speak(aiMessage);
       }
     } catch (err) {
       console.error(err);
+      setError('Unable to reach the server');
     } finally {
       setLoading(false);
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleAudioMessage = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+        },
+        body: new FormData(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Audio request failed: ${response.status}`);
+      }
+
+      try {
+        await response.json();
+      } catch {
+        throw new Error('Invalid JSON in audio response');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Unable to reach the server');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const speak = async (text: string) => {
+    setError(null);
+    try {
+      const response = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({ input: text }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Speech request failed: ${response.status}`);
+      }
+
+      try {
+        await response.json();
+      } catch {
+        throw new Error('Invalid JSON in speech response');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Unable to reach the server');
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto p-4">
+      {error && <div className="mb-2 text-sm text-red-500">{error}</div>}
       <div className="h-64 overflow-y-auto border p-2 mb-4">
         {messages.map((m, idx) => (
           <div key={idx} className={`mb-2 ${m.role === 'user' ? 'text-right' : 'text-left'}`}>
