@@ -35,7 +35,7 @@ const IndianChatAgent: React.FC = () => {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-    const newMessages = [...messages, { role: 'user', content: input }];
+    const newMessages = [...messages, { role: 'user' as const, content: input }];
     setMessages(newMessages);
     setInput('');
     setLoading(true);
@@ -73,7 +73,7 @@ const IndianChatAgent: React.FC = () => {
 
       const aiMessage = data.choices?.[0]?.message?.content?.trim();
       if (aiMessage) {
-        setMessages([...newMessages, { role: 'assistant', content: aiMessage }]);
+        setMessages([...newMessages, { role: 'assistant' as const, content: aiMessage }]);
         await speak(aiMessage);
       }
     } catch (err) {
@@ -84,7 +84,7 @@ const IndianChatAgent: React.FC = () => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const handleAudioMessage = async () => {
     setLoading(true);
     setError(null);

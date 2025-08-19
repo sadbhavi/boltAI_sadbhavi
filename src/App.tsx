@@ -77,13 +77,6 @@ function App() {
     <div className="min-h-screen bg-stone-50">
       <Header onAuthClick={() => setShowAuthModal(true)} />
       <Hero />
-      <Features />
-      <SoundscapePlayer />
-      <SleepStories />
-      <BreathingExercises />
-      <About />
-      <Pricing />
-      <Blog />
       <section id="dating">
         <DatingSection />
       </section>
@@ -93,6 +86,13 @@ function App() {
       <section id="ai-agent">
         <IndianChatAgent />
       </section>
+      <SoundscapePlayer />
+      <SleepStories />
+      <Features />
+      <BreathingExercises />
+      <About />
+      <Pricing />
+      <Blog />
       <Download />
       <Footer />
 
