@@ -11,7 +11,7 @@ import Pricing from './components/Pricing';
 import Blog from './components/Blog';
 import Download from './components/Download';
 import Footer from './components/Footer';
-import DatingApp from './components/dating/DatingApp';
+import DatingSection from './components/dating/DatingSection';
 import EmotionalSupport from './components/EmotionalSupport';
 import AuthSystem from './components/auth/AuthSystem';
 import UserFlow from './components/UserFlow';
@@ -56,7 +56,7 @@ function App() {
       <div className="min-h-screen bg-stone-50">
         <Header />
         <section id="dating">
-          <DatingApp />
+          <DatingSection />
         </section>
         <section id="emotional-support">
           <EmotionalSupport />
@@ -85,7 +85,7 @@ function App() {
       <Pricing />
       <Blog />
       <section id="dating">
-        <DatingApp />
+        <DatingSection />
       </section>
       <section id="emotional-support">
         <EmotionalSupport />
