@@ -1,4 +1,4 @@
-import type { PostgrestError } from '@supabase/supabase-js';
+import type { PostgrestError, StorageError } from '@supabase/supabase-js';
 import { supabase } from '../supabase';
 import type { BlogCategory, BlogPost } from '../supabase';
 
@@ -59,5 +59,50 @@ export const blogAPI = {
       post_id: postId,
     });
     return { data, error } as { data: unknown; error: PostgrestError | null };
+  },
+
+  async createBlogPost({
+    title,
+    content,
+    image,
+  }: {
+    title: string;
+    content: string;
+    image: File;
+  }): Promise<{
+    data: BlogPost | null;
+    error: PostgrestError | StorageError | null;
+  }> {
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    const filePath = `${Date.now()}-${image.name}`;
+    const { error: uploadError } = await supabase.storage
+      .from('blog_images')
+      .upload(filePath, image);
+
+    if (uploadError) return { data: null, error: uploadError };
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from('blog_images').getPublicUrl(filePath);
+
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .insert({
+        title,
+        slug,
+        content,
+        featured_image: publicUrl,
+        author_name: 'Admin',
+        status: 'published',
+        published_at: new Date().toISOString(),
+      })
+      .select('*')
+      .single();
+
+    return { data, error };
   },
 };
