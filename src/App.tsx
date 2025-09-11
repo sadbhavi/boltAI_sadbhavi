@@ -55,9 +55,9 @@ function App() {
     return (
       <div className="min-h-screen bg-stone-50">
         <Header />
-        <section id="dating">
+        {/* <section id="dating">
           <DatingSection />
-        </section>
+        </section> */}
         <section id="emotional-support">
           <EmotionalSupport />
         </section>
@@ -77,9 +77,9 @@ function App() {
     <div className="min-h-screen bg-stone-50">
       <Header onAuthClick={() => setShowAuthModal(true)} />
       <Hero />
-      <section id="dating">
+      {/* <section id="dating">
         <DatingSection />
-      </section>
+      </section> */}
       <section id="emotional-support">
         <EmotionalSupport />
       </section>
