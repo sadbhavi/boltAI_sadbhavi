@@ -74,7 +74,7 @@ function App() {
 
   // Show homepage for non-authenticated users
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-stone-50">  
       <Header onAuthClick={() => setShowAuthModal(true)} />
       <Hero />
       {/* <section id="dating">
