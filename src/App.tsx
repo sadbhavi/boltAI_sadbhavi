@@ -64,9 +64,9 @@ function App() {
         <section id="nearby">
           <SurroundingListing />
         </section>
-        <section id="ai-agent">
+        {/* <section id="ai-agent">
           <IndianChatAgent />
-        </section>
+        </section> */}
         <Footer />
       </div>
     );
@@ -83,9 +83,9 @@ function App() {
       <section id="emotional-support">
         <EmotionalSupport />
       </section>
-      <section id="ai-agent">
+      {/* <section id="ai-agent">
         <IndianChatAgent />
-      </section>
+      </section> */}
       <SoundscapePlayer />
       <SleepStories />
       <Features />

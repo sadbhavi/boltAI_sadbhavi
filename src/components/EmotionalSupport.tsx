@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Phone, Heart, Shield, Clock, User, Send, Mic, MicOff, PhoneCall, Calendar, Star, CheckCircle, Users, Globe } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MessageCircle, Phone, Heart, Shield, Clock, User, Send, Mic, MicOff, PhoneCall, Calendar, Star, CheckCircle, Users, Globe, Loader2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import SubscriptionModal from './subscription/SubscriptionModal';
+import { sendMessageToGemini, ChatMessage } from '../lib/apis/gemini';
 
 interface Message {
   id: string;
@@ -28,6 +29,8 @@ const EmotionalSupport = () => {
     const [userContext, setUserContext] = useState('');
     const [callSession, setCallSession] = useState<CallSession | null>(null);
     const [isMuted, setIsMuted] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+    const [geminiHistory, setGeminiHistory] = useState<ChatMessage[]>([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [supportRating, setSupportRating] = useState(0);
@@ -65,12 +68,17 @@ const EmotionalSupport = () => {
     if (showChat && messages.length === 0) {
       const welcomeMessage: Message = {
         id: '1',
-        text: "Hello! I'm here to listen and support you. How are you feeling today? Please feel free to share what's on your mind.",
+        text: "Namaste! 🙏 Main Sadbhavi hoon, aapki dost. Aap kaise feel kar rahe ho aaj? Koi bhi baat ho, main yahan sunne ke liye hoon. Feel free to share - Hindi ya English, jo comfortable ho! 💛",
         sender: 'support',
         timestamp: new Date(),
         type: 'text'
       };
       setMessages([welcomeMessage]);
+      // Add the welcome message to Gemini history as model response
+      setGeminiHistory([{
+        role: 'model',
+        parts: [{ text: welcomeMessage.text }]
+      }]);
     }
     }, [showChat, messages.length]);
 
@@ -106,7 +114,7 @@ const EmotionalSupport = () => {
     }
   };
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!newMessage.trim()) return;
 
     if (!isPremium && messageCount >= 10) {
@@ -114,9 +122,10 @@ const EmotionalSupport = () => {
       return;
     }
 
+    const userMessageText = newMessage.trim();
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: newMessage,
+      text: userMessageText,
       sender: 'user',
       timestamp: new Date(),
       type: 'text'
@@ -125,27 +134,54 @@ const EmotionalSupport = () => {
     setMessages(prev => [...prev, userMessage]);
     setNewMessage('');
     setMessageCount((c) => c + 1);
+    setIsTyping(true);
 
-    // Simulate support response
-    setTimeout(() => {
-      const responses = [
-        "I hear you, and I want you to know that your feelings are valid. Can you tell me more about what's been troubling you?",
-        "Thank you for sharing that with me. It takes courage to reach out. How long have you been feeling this way?",
-        "I'm here to listen without judgment. What would feel most helpful for you right now?",
-        "That sounds really challenging. You're not alone in this. What support do you have around you?",
-        "I appreciate you opening up. Sometimes just talking about our feelings can help. How are you taking care of yourself?"
-      ];
-      
-      const supportMessage: Message = {
+    try {
+      // Call Gemini API with conversation history
+      const response = await sendMessageToGemini(userMessageText, geminiHistory);
+
+      if (response.success) {
+        const supportMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: response.message,
+          sender: 'support',
+          timestamp: new Date(),
+          type: 'text'
+        };
+
+        setMessages(prev => [...prev, supportMessage]);
+
+        // Update Gemini conversation history
+        setGeminiHistory(prev => [
+          ...prev,
+          { role: 'user', parts: [{ text: userMessageText }] },
+          { role: 'model', parts: [{ text: response.message }] }
+        ]);
+      } else {
+        // Fallback response if API fails
+        const fallbackMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: "I'm sorry, I'm having trouble connecting right now. Lekin main yahan hoon aapke liye. Please try again in a moment, ya phir aap mujhe batao kya hua? 💛",
+          sender: 'support',
+          timestamp: new Date(),
+          type: 'text'
+        };
+        setMessages(prev => [...prev, fallbackMessage]);
+        console.error('Gemini API error:', response.error);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: responses[Math.floor(Math.random() * responses.length)],
+        text: "Kuch technical issue aa gaya hai. But don't worry, main yahan hoon. Thoda wait karo aur phir se try karo. 🙏",
         sender: 'support',
         timestamp: new Date(),
         type: 'text'
       };
-
-      setMessages(prev => [...prev, supportMessage]);
-    }, 1500);
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const startAudioCall = () => {
@@ -411,15 +447,15 @@ const EmotionalSupport = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl h-[600px] flex flex-col">
             {/* Chat Header */}
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-2xl">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-2xl">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                     <Heart className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Emotional Support Chat</h3>
-                    <p className="text-sm text-blue-100">We're here to listen</p>
+                    <h3 className="font-semibold">Sadbhavi 💛</h3>
+                    <p className="text-sm text-blue-100">Aapki dost, hamesha yahan 🙏</p>
                   </div>
                 </div>
                 <button
@@ -454,6 +490,15 @@ const EmotionalSupport = () => {
                   </div>
                 </div>
               ))}
+              {/* Typing indicator */}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-2xl flex items-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                    <span className="text-sm text-gray-600">Sadbhavi is typing...</span>
+                  </div>
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -465,13 +510,15 @@ const EmotionalSupport = () => {
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onKeyDown={(e) => e.key === 'Enter' && !isTyping && sendMessage()}
+                  placeholder="Apni baat share karo... (Hindi ya English)"
+                  disabled={isTyping}
+                  className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
                 <button
                   onClick={sendMessage}
-                  className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors"
+                  disabled={isTyping || !newMessage.trim()}
+                  className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                 </button>

@@ -45,13 +45,13 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
               <a href="#about" className="text-stone-600 hover:text-forest-600 transition-colors">About</a>
               <a href="#pricing" className="text-stone-600 hover:text-forest-600 transition-colors">Pricing</a>
               <a href="#blog" className="text-stone-600 hover:text-forest-600 transition-colors">Blog</a>
-              <a href="#dating" className="text-stone-600 hover:text-forest-600 transition-colors flex items-center space-x-1">
+              {/* <a href="#dating" className="text-stone-600 hover:text-forest-600 transition-colors flex items-center space-x-1">
                 <Heart className="w-4 h-4" />
                 <span>Dating</span>
-              </a>
+              </a> */}
               <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
               
-              {user ? (
+              {/* {user ? (
                 <div className="flex items-center space-x-4">
                   {!isPremium && (
                     <button
@@ -82,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
                     Get Started
                   </button>
                 </div>
-              )}
+              )} */}
             </nav>
 
             <button 
