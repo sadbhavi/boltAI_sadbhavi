@@ -20,17 +20,17 @@ interface CallSession {
 }
 
 const EmotionalSupport = () => {
-    const [showChat, setShowChat] = useState(false);
-    const [showCallInterface, setShowCallInterface] = useState(false);
-    const [showScheduler, setShowScheduler] = useState(false);
-    const [isOnline] = useState(true);
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [newMessage, setNewMessage] = useState('');
-    const [userContext, setUserContext] = useState('');
-    const [callSession, setCallSession] = useState<CallSession | null>(null);
-    const [isMuted, setIsMuted] = useState(false);
-    const [isTyping, setIsTyping] = useState(false);
-    const [geminiHistory, setGeminiHistory] = useState<ChatMessage[]>([]);
+  const [showChat, setShowChat] = useState(false);
+  const [showCallInterface, setShowCallInterface] = useState(false);
+  const [showScheduler, setShowScheduler] = useState(false);
+  const [isOnline] = useState(true);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [userContext, setUserContext] = useState('');
+  const [callSession, setCallSession] = useState<CallSession | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [geminiHistory, setGeminiHistory] = useState<ChatMessage[]>([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [supportRating, setSupportRating] = useState(0);
@@ -40,12 +40,9 @@ const EmotionalSupport = () => {
     const stored = localStorage.getItem('messageCount');
     return stored ? parseInt(stored, 10) : 0;
   });
-  const [freeCallUsed, setFreeCallUsed] = useState(() => {
-    return localStorage.getItem('freeCallUsed') === 'true';
-  });
 
   const { isPremium } = useAuth();
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,10 +50,6 @@ const EmotionalSupport = () => {
   useEffect(() => {
     localStorage.setItem('messageCount', messageCount.toString());
   }, [messageCount]);
-
-  useEffect(() => {
-    localStorage.setItem('freeCallUsed', freeCallUsed.toString());
-  }, [freeCallUsed]);
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -80,7 +73,7 @@ const EmotionalSupport = () => {
         parts: [{ text: welcomeMessage.text }]
       }]);
     }
-    }, [showChat, messages.length]);
+  }, [showChat, messages.length]);
 
   // Simulate call timer
   useEffect(() => {
@@ -89,9 +82,9 @@ const EmotionalSupport = () => {
         setCallSession(prev =>
           prev
             ? {
-                ...prev,
-                duration: prev.duration + 1,
-              }
+              ...prev,
+              duration: prev.duration + 1,
+            }
             : null,
         );
       }, 1000);
@@ -117,7 +110,7 @@ const EmotionalSupport = () => {
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
 
-    if (!isPremium && messageCount >= 10) {
+    if (!isPremium && messageCount >= 100) {
       setShowSubscriptionModal(true);
       return;
     }
@@ -185,29 +178,9 @@ const EmotionalSupport = () => {
   };
 
   const startAudioCall = () => {
-    if (!isPremium && freeCallUsed) {
-      setShowSubscriptionModal(true);
-      return;
-    }
-
-    if (!isPremium && !freeCallUsed) {
-      setFreeCallUsed(true);
-    }
     if (typeof window !== 'undefined') {
-      window.location.href = 'tel:6394255782';
+      window.location.href = 'tel:6387153863';
     }
-    setCallSession({
-      id: Date.now().toString(),
-      status: 'connecting',
-      duration: 0,
-      startTime: new Date()
-    });
-    setShowCallInterface(true);
-
-    // Simulate connection
-    setTimeout(() => {
-      setCallSession(prev => (prev ? { ...prev, status: 'connected' } : null));
-    }, 3000);
   };
 
   const endCall = () => {
@@ -260,9 +233,8 @@ const EmotionalSupport = () => {
 
         {/* Availability Status */}
         <div className="flex justify-center mb-12">
-          <div className={`flex items-center space-x-3 px-6 py-3 rounded-full ${
-            isOnline ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'
-          }`}>
+          <div className={`flex items-center space-x-3 px-6 py-3 rounded-full ${isOnline ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'
+            }`}>
             <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-orange-500'} animate-pulse`}></div>
             <span className="font-medium">
               {isOnline ? 'Available for Support' : 'Currently Offline - Schedule a Call'}
@@ -475,16 +447,14 @@ const EmotionalSupport = () => {
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
-                      message.sender === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
+                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${message.sender === 'user'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-100 text-gray-800'
+                      }`}
                   >
                     <p className="text-sm">{message.text}</p>
-                    <p className={`text-xs mt-1 ${
-                      message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
+                    <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
+                      }`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
@@ -538,8 +508,8 @@ const EmotionalSupport = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Support Counselor</h3>
               <p className="text-gray-600">
-                {callSession.status === 'connecting' ? 'Connecting...' : 
-                 callSession.status === 'connected' ? 'Connected' : 'Call Ended'}
+                {callSession.status === 'connecting' ? 'Connecting...' :
+                  callSession.status === 'connected' ? 'Connected' : 'Call Ended'}
               </p>
             </div>
 
@@ -551,9 +521,8 @@ const EmotionalSupport = () => {
                 <div className="flex justify-center space-x-4">
                   <button
                     onClick={() => setIsMuted(!isMuted)}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                      isMuted ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600'
-                    }`}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${isMuted ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600'
+                      }`}
                   >
                     {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                   </button>
@@ -655,9 +624,8 @@ const EmotionalSupport = () => {
                 <button
                   key={star}
                   onClick={() => setSupportRating(star)}
-                  className={`w-8 h-8 ${
-                    star <= supportRating ? 'text-yellow-500' : 'text-gray-300'
-                  } hover:text-yellow-500 transition-colors`}
+                  className={`w-8 h-8 ${star <= supportRating ? 'text-yellow-500' : 'text-gray-300'
+                    } hover:text-yellow-500 transition-colors`}
                 >
                   <Star className="w-full h-full fill-current" />
                 </button>
