@@ -208,11 +208,11 @@ const SoundscapePlayer = () => {
 
         {/* Audio Player Modal */}
         {selectedSoundscape && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="relative">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+            <div className="relative w-full max-w-md">
               <button
                 onClick={() => setSelectedSoundscape(null)}
-                className="absolute -top-4 -right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center text-stone-600 hover:text-stone-800 z-10"
+                className="absolute -top-4 -right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center text-stone-600 hover:text-stone-800 z-10 shadow-lg"
               >
                 ×
               </button>
