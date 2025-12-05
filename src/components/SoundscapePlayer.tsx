@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, Volume2, Timer, Shuffle } from 'lucide-react';
+import { Play, Volume2, Timer, Shuffle } from 'lucide-react';
 import AudioPlayer from './AudioPlayer';
 
 interface Soundscape {
@@ -18,7 +18,7 @@ const SoundscapePlayer = () => {
       id: '1',
       title: 'Ocean Waves',
       description: 'Gentle waves lapping against the shore',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      audioUrl: '/sounds/natural-soundscapes/ocean-waves.mp3',
       image: 'https://images.pexels.com/photos/1496373/pexels-photo-1496373.jpeg',
       category: 'nature'
     },
@@ -26,7 +26,7 @@ const SoundscapePlayer = () => {
       id: '2',
       title: 'Forest Rain',
       description: 'Peaceful rainfall in a lush forest',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      audioUrl: '/sounds/natural-soundscapes/forest-rain.mp3',
       image: 'https://images.pexels.com/photos/1031641/pexels-photo-1031641.jpeg',
       category: 'nature'
     },
@@ -34,7 +34,7 @@ const SoundscapePlayer = () => {
       id: '3',
       title: 'Mountain Stream',
       description: 'Babbling brook flowing through mountains',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      audioUrl: '/sounds/natural-soundscapes/mountain-stream.mp3',
       image: 'https://images.pexels.com/photos/3822583/pexels-photo-3822583.jpeg',
       category: 'nature'
     },
@@ -77,8 +77,8 @@ const SoundscapePlayer = () => {
     { id: 'binaural', name: 'Binaural', icon: Play }
   ];
 
-  const filteredSoundscapes = activeCategory === 'all' 
-    ? soundscapes 
+  const filteredSoundscapes = activeCategory === 'all'
+    ? soundscapes
     : soundscapes.filter(s => s.category === activeCategory);
 
   const handleTimerSet = (minutes: number) => {
@@ -132,11 +132,10 @@ const SoundscapePlayer = () => {
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 ${
-                  activeCategory === category.id
-                    ? 'bg-forest-600 text-white shadow-lg'
-                    : 'bg-white text-stone-600 hover:bg-stone-100'
-                }`}
+                className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 ${activeCategory === category.id
+                  ? 'bg-forest-600 text-white shadow-lg'
+                  : 'bg-white text-stone-600 hover:bg-stone-100'
+                  }`}
               >
                 <IconComponent className="w-4 h-4" />
                 <span>{category.name}</span>
@@ -194,7 +193,7 @@ const SoundscapePlayer = () => {
                   </span>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-stone-800 mb-2 group-hover:text-forest-600 transition-colors">
                   {soundscape.title}

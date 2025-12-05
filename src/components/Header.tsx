@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
               <div className="w-8 h-8 bg-gradient-to-br from-forest-600 to-sage-500 rounded-full flex items-center justify-center">
                 <Leaf className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-forest-800">Serenity</span>
+              <span className="text-xl font-bold text-forest-800">Sadbhavi</span>
             </div>
 
             <nav className="hidden md:flex items-center space-x-8">
@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
                 <span>Dating</span>
               </a> */}
               <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
-              
+
               {/* {user ? (
                 <div className="flex items-center space-x-4">
                   {!isPremium && (
@@ -85,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
               )} */}
             </nav>
 
-            <button 
+            <button
               className="md:hidden p-2"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
@@ -105,8 +105,8 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
                   <span>Dating</span>
                 </a>
                 <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
-                
-                {user ? (
+
+                {/* {user ? (
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2">
                       <User className="w-5 h-5 text-stone-600" />
@@ -137,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
                       Get Started
                     </button>
                   </div>
-                )}
+                )} */}
               </nav>
             </div>
           )}
@@ -150,7 +150,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
         onClose={() => setShowAuthModal(false)}
         initialMode={authMode}
       />
-      
+
       <SubscriptionModal
         isOpen={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
