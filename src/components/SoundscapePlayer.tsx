@@ -42,7 +42,7 @@ const SoundscapePlayer = () => {
       id: '4',
       title: 'Tibetan Bowls',
       description: 'Resonant singing bowls for deep meditation',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      audioUrl: '/sounds/ambient-soundscapes/bowl-sound.mp3',
       image: 'https://images.pexels.com/photos/3759657/pexels-photo-3759657.jpeg',
       category: 'ambient'
     },
@@ -50,7 +50,7 @@ const SoundscapePlayer = () => {
       id: '5',
       title: 'White Noise',
       description: 'Pure white noise for focus and concentration',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      audioUrl: '/sounds/ambient-soundscapes/white-noise.mp3',
       image: 'https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg',
       category: 'white-noise'
     },
@@ -58,7 +58,7 @@ const SoundscapePlayer = () => {
       id: '6',
       title: 'Binaural Beats - Focus',
       description: '40Hz gamma waves for enhanced concentration',
-      audioUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      audioUrl: '/sounds/ambient-soundscapes/binaural-beats.mp3',
       image: 'https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg',
       category: 'binaural'
     }
