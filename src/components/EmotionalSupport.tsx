@@ -541,7 +541,7 @@ const EmotionalSupport = () => {
       )}
 
       {/* Call Scheduler Modal */}
-      {showScheduler && (
+      {/* {showScheduler && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 max-w-md w-full">
             <div className="text-center mb-6">
@@ -607,7 +607,7 @@ const EmotionalSupport = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Feedback Modal */}
       {showFeedback && (

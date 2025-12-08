@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import { useBlog } from '../hooks/useBlog';
 
@@ -81,19 +82,19 @@ const Blog = () => {
                   </div>
                 </div>
 
-                <button className="mt-4 flex items-center space-x-2 text-forest-600 hover:text-forest-700 font-medium group-hover:translate-x-2 transition-transform">
+                <Link to={`/blog/${post.slug}`} className="mt-4 flex items-center space-x-2 text-forest-600 hover:text-forest-700 font-medium group-hover:translate-x-2 transition-transform inline-flex">
                   <span>Read More</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
             </article>
           ))}
         </div>
 
         <div className="text-center">
-          <button className="bg-forest-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-forest-700 transform hover:scale-105 transition-all duration-200">
+          <Link to="/blog" className="inline-block bg-forest-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-forest-700 transform hover:scale-105 transition-all duration-200">
             View All Articles
-          </button>
+          </Link>
         </div>
       </div>
     </section>
