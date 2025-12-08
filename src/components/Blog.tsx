@@ -1,10 +1,9 @@
-import React from 'react';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import { useBlog } from '../hooks/useBlog';
 
 const Blog = () => {
   const { posts, loading, error } = useBlog();
-  
+
   if (loading) {
     return (
       <section id="blog" className="py-20 bg-gradient-to-br from-stone-50 to-sage-50">
@@ -49,8 +48,8 @@ const Blog = () => {
           {displayPosts.map((post, index) => (
             <article key={index} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
               <div className="relative">
-                <img 
-                  src={post.featured_image || 'https://images.pexels.com/photos/3822583/pexels-photo-3822583.jpeg'} 
+                <img
+                  src={post.featured_image || 'https://images.pexels.com/photos/3822583/pexels-photo-3822583.jpeg'}
                   alt={post.title}
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -60,7 +59,7 @@ const Blog = () => {
                   </span>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-stone-800 mb-3 group-hover:text-forest-600 transition-colors">
                   {post.title}
@@ -68,7 +67,7 @@ const Blog = () => {
                 <p className="text-stone-600 mb-4 leading-relaxed">
                   {post.excerpt}
                 </p>
-                
+
                 <div className="flex items-center justify-between text-sm text-stone-500">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-1">
@@ -81,7 +80,7 @@ const Blog = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <button className="mt-4 flex items-center space-x-2 text-forest-600 hover:text-forest-700 font-medium group-hover:translate-x-2 transition-transform">
                   <span>Read More</span>
                   <ArrowRight className="w-4 h-4" />

@@ -38,28 +38,24 @@ const Pricing = () => {
     {
       id: 'monthly',
       name: 'Monthly',
-      price: '₹499',
+      price: '₹99',
       period: 'per month',
       description: 'Full access to all premium content',
       features: [
         'Unlimited meditations',
         '500+ sleep stories',
         'All breathing exercises',
-        'Masterclasses',
-        'Advanced progress tracking',
-        'Offline downloads',
-        'Premium support',
-        'Premium dating features'
+        'Premium support'
       ],
-      cta: 'Start 14-Day Trial',
+      cta: 'Comming Soon',
       popular: true
     },
     {
       id: 'annual',
       name: 'Annual',
-      price: '₹2999',
+      price: '₹499',
       period: 'per year',
-      originalPrice: '₹5988',
+      originalPrice: '₹1000',
       description: 'Best value - save 50% with annual billing',
       features: [
         'Everything in Monthly',
@@ -67,10 +63,9 @@ const Pricing = () => {
         'Early access to new features',
         'Family sharing (up to 6 members)',
         'Exclusive content',
-        'Annual progress reports',
-        'Premium dating with priority matching'
+        'Annual progress reports'
       ],
-      cta: 'Start 14-Day Trial',
+      cta: 'Comming Soon',
       popular: false
     }
   ];
@@ -92,11 +87,10 @@ const Pricing = () => {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
-            <div 
+            <div
               key={index}
-              className={`relative bg-stone-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${
-                plan.popular ? 'ring-2 ring-forest-600 bg-gradient-to-br from-forest-50 to-sage-50' : ''
-              }`}
+              className={`relative bg-stone-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${plan.popular ? 'ring-2 ring-forest-600 bg-gradient-to-br from-forest-50 to-sage-50' : ''
+                }`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -130,12 +124,11 @@ const Pricing = () => {
                 ))}
               </ul>
 
-              <button 
-                className={`w-full py-4 rounded-full font-semibold transition-all duration-200 ${
-                  plan.popular
-                    ? 'bg-forest-600 text-white hover:bg-forest-700 transform hover:scale-105'
-                    : 'border-2 border-forest-600 text-forest-600 hover:bg-forest-600 hover:text-white'
-                }`}
+              <button
+                className={`w-full py-4 rounded-full font-semibold transition-all duration-200 ${plan.popular
+                  ? 'bg-forest-600 text-white hover:bg-forest-700 transform hover:scale-105'
+                  : 'border-2 border-forest-600 text-forest-600 hover:bg-forest-600 hover:text-white'
+                  }`}
                 onClick={() => handlePlanSelect(plan.id)}
                 disabled={isPremium && plan.id !== 'free'}
               >

@@ -6,52 +6,56 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-k
 // Create a mock client if using placeholder values
 const isPlaceholder = supabaseUrl === 'https://placeholder.supabase.co' || supabaseAnonKey === 'placeholder-key';
 
-export const supabase = isPlaceholder 
-  ? createMockSupabaseClient() 
+export const supabase = isPlaceholder
+  ? createMockSupabaseClient()
   : createClient(supabaseUrl, supabaseAnonKey);
 
 function createMockSupabaseClient() {
+  let currentSession: any = null;
+
+  const mockBuilder = new Proxy({}, {
+    get: (target, prop) => {
+      if (prop === 'then') {
+        return (resolve: any) => resolve({ data: [], error: null });
+      }
+      return () => mockBuilder;
+    }
+  });
+
   return {
     auth: {
-      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+      getSession: () => Promise.resolve({ data: { session: currentSession }, error: null }),
+      getUser: () => Promise.resolve({ data: { user: currentSession?.user || null }, error: null }),
       signUp: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-      signInWithPassword: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-      signOut: () => Promise.resolve({ error: null }),
+      signInWithPassword: ({ email, password }: any) => {
+        if (email === 'akkiibaghel2@gmail.com' && password === 'Mahendrasingh2@') {
+          currentSession = {
+            user: { id: 'admin-user', email: 'akkiibaghel2@gmail.com' },
+            access_token: 'mock-token'
+          };
+          return Promise.resolve({ data: { session: currentSession, user: currentSession.user }, error: null });
+        }
+        return Promise.resolve({ data: null, error: { message: 'Invalid credentials' } });
+      },
+      signOut: () => {
+        currentSession = null;
+        return Promise.resolve({ error: null });
+      },
       resetPasswordForEmail: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      onAuthStateChange: (callback: any) => {
+        if (currentSession) {
+          callback('SIGNED_IN', currentSession);
+        }
+        return { data: { subscription: { unsubscribe: () => { } } } };
+      },
     },
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          single: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-          order: () => Promise.resolve({ data: [], error: null }),
-          limit: () => Promise.resolve({ data: [], error: null }),
-        }),
-        order: () => Promise.resolve({ data: [], error: null }),
-        limit: () => Promise.resolve({ data: [], error: null }),
-      }),
-      insert: () => ({
-        select: () => ({
-          single: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-        }),
-      }),
-      update: () => ({
-        eq: () => ({
-          select: () => ({
-            single: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-          }),
-        }),
-      }),
-      upsert: () => ({
-        select: () => ({
-          single: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-        }),
-      }),
-      delete: () => ({
-        eq: () => Promise.resolve({ error: null }),
-      }),
-    }),
+    from: () => mockBuilder,
+    storage: {
+      from: () => ({
+        upload: () => Promise.resolve({ data: null, error: null }),
+        getPublicUrl: () => ({ data: { publicUrl: '' } }),
+      })
+    },
     rpc: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
   } as any;
 }

@@ -1,114 +1,39 @@
+
 import React from 'react';
-import { useState } from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import SoundscapePlayer from './components/SoundscapePlayer';
-import SleepStories from './components/SleepStories';
-import BreathingExercises from './components/BreathingExercises';
-import About from './components/About';
-import Pricing from './components/Pricing';
-import Blog from './components/Blog';
-import Download from './components/Download';
-import Footer from './components/Footer';
-import DatingSection from './components/dating/DatingSection';
-import EmotionalSupport from './components/EmotionalSupport';
-import AuthSystem from './components/auth/AuthSystem';
-import UserFlow from './components/UserFlow';
-import SurroundingListing from './components/SurroundingListing';
-import IndianChatAgent from './components/IndianChatAgent';
-import AdminDashboard from './components/admin/AdminDashboard';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import PublicLayout from './components/layouts/PublicLayout';
+import AdminLayout from './components/layouts/AdminLayout';
+import Home from './components/Home';
+import BlogIndex from './components/blog/BlogIndex';
+import BlogPostPage from './components/blog/BlogPost';
 import AdminLogin from './components/admin/AdminLogin';
+import BlogPostEditor from './components/admin/BlogPostEditor';
+import BlogPostsList from './components/admin/BlogPostsList';
+import AdminDashboard from './components/admin/AdminDashboard';
+import UserFlow from './components/UserFlow';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showUserFlow, setShowUserFlow] = useState(false);
-  const [currentFlowStep, setCurrentFlowStep] = useState<'support' | 'dating' | 'nearby' | 'complete'>('support');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-
-  const handleLoginSuccess = () => {
-    setIsAuthenticated(true);
-    setShowAuthModal(false);
-    setShowUserFlow(true);
-    setCurrentFlowStep('support');
-  };
-
-  const handleUserFlowComplete = () => {
-    setShowUserFlow(false);
-    setCurrentFlowStep('complete');
-  };
-
-  // Show admin dashboard
-  if (isAdmin) {
-    return <AdminDashboard />;
-  }
-
-  // Show user flow after login
-  if (isAuthenticated && showUserFlow) {
-    return <UserFlow onComplete={handleUserFlowComplete} />;
-  }
-
-  // Show main app after user flow completion
-  if (isAuthenticated && currentFlowStep === 'complete') {
-    return (
-      <div className="min-h-screen bg-stone-50">
-        <Header />
-        {/* <section id="dating">
-          <DatingSection />
-        </section> */}
-        <section id="emotional-support">
-          <EmotionalSupport />
-        </section>
-        <section id="nearby">
-          <SurroundingListing />
-        </section>
-        {/* <section id="ai-agent">
-          <IndianChatAgent />
-        </section> */}
-        <Footer />
-      </div>
-    );
-  }
-
-  // Show homepage for non-authenticated users
   return (
-    <div className="min-h-screen bg-stone-50">  
-      <Header onAuthClick={() => setShowAuthModal(true)} />
-      <Hero />
-      {/* <section id="dating">
-        <DatingSection />
-      </section> */}
-      <section id="emotional-support">
-        <EmotionalSupport />
-      </section>
-      {/* <section id="ai-agent">
-        <IndianChatAgent />
-      </section> */}
-      <SoundscapePlayer />
-      <SleepStories />
-      <Features />
-      <BreathingExercises />
-      <About />
-      <Pricing />
-      <Blog />
-      <Download />
-      <Footer />
+    <Router>
+      <Routes>
+        <Route path="/admin/login" element={<AdminLogin onClose={() => window.location.href = '/'} onSuccess={() => window.location.href = '/admin/dashboard'} />} />
 
-        <button onClick={() => setShowAdminLogin(true)} className="fixed bottom-4 right-4 text-xs text-stone-500">Admin</button>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="posts" element={<BlogPostsList />} />
+          <Route path="posts/new" element={<BlogPostEditor />} />
+          <Route path="posts/:id" element={<BlogPostEditor />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+        </Route>
 
-        {showAdminLogin && (
-          <AdminLogin onSuccess={() => { setIsAdmin(true); setShowAdminLogin(false); }} onClose={() => setShowAdminLogin(false)} />
-        )}
-
-      
-      <AuthSystem
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onLoginSuccess={handleLoginSuccess}
-      />
-    </div>
+        <Route path="/" element={<PublicLayout />}>
+          <Route index element={<Home />} />
+          <Route path="blog" element={<BlogIndex />} />
+          <Route path="blog/:slug" element={<BlogPostPage />} />
+          <Route path="onboarding" element={<UserFlow onComplete={() => window.location.href = '/'} />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 

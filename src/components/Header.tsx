@@ -1,28 +1,22 @@
 import React, { useState } from 'react';
 import { Menu, X, Leaf, User, Heart } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import AuthModal from './auth/AuthModal';
+// import AuthSystem from './auth/AuthSystem';
 import SubscriptionModal from './subscription/SubscriptionModal';
 
-interface HeaderProps {
-  onAuthClick?: () => void;
-}
+interface HeaderProps { }
 
-const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
+const Header: React.FC<HeaderProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  // const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  // const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const { user, signOut, isPremium } = useAuth();
 
-  const handleAuthClick = (mode: 'login' | 'signup') => {
-    if (onAuthClick) {
-      onAuthClick();
-    } else {
-      setAuthMode(mode);
-      setShowAuthModal(true);
-    }
-  };
+  // const handleAuthClick = (mode: 'login' | 'signup') => {
+  //   setAuthMode(mode);
+  //   setShowAuthModal(true);
+  // };
 
   const handleSignOut = async () => {
     await signOut();
@@ -51,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
               </a> */}
               <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
 
-              {/* {user ? (
+              {user ? (
                 <div className="flex items-center space-x-4">
                   {!isPremium && (
                     <button
@@ -75,14 +69,14 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
                 </div>
               ) : (
                 <div className="flex items-center space-x-4">
-                  <button onClick={() => handleAuthClick('login')} className="text-stone-600 hover:text-forest-600 transition-colors">
+                  {/* <button onClick={() => handleAuthClick('login')} className="text-stone-600 hover:text-forest-600 transition-colors">
                     Sign In
-                  </button>
-                  <button onClick={() => handleAuthClick('signup')} className="bg-forest-600 text-white px-4 py-2 rounded-full hover:bg-forest-700 transition-colors">
+                  </button> */}
+                  {/* <button onClick={() => handleAuthClick('signup')} className="bg-forest-600 text-white px-4 py-2 rounded-full hover:bg-forest-700 transition-colors">
                     Get Started
-                  </button>
+                  </button> */}
                 </div>
-              )} */}
+              )}
             </nav>
 
             <button
@@ -106,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
                 </a>
                 <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
 
-                {/* {user ? (
+                {user ? (
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2">
                       <User className="w-5 h-5 text-stone-600" />
@@ -121,23 +115,23 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
                         Upgrade to Premium
                       </button>
                     )}
-                    <button
+                    {/* <button
                       onClick={handleSignOut}
                       className="text-stone-600 hover:text-forest-600 transition-colors"
                     >
                       Sign Out
-                    </button>
+                    </button> */}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <button onClick={() => handleAuthClick('login')} className="text-stone-600 hover:text-forest-600 transition-colors">
+                    {/* <button onClick={() => handleAuthClick('login')} className="text-stone-600 hover:text-forest-600 transition-colors">
                       Sign In
                     </button>
                     <button onClick={() => handleAuthClick('signup')} className="bg-forest-600 text-white px-4 py-2 rounded-full hover:bg-forest-700 transition-colors w-fit">
                       Get Started
-                    </button>
+                    </button> */}
                   </div>
-                )} */}
+                )}
               </nav>
             </div>
           )}
@@ -145,11 +139,15 @@ const Header: React.FC<HeaderProps> = ({ onAuthClick }) => {
       </header>
 
       {/* Modals */}
-      <AuthModal
+      {/* <AuthSystem
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
+        onLoginSuccess={() => {
+          setShowAuthModal(false);
+          window.location.href = '/onboarding';
+        }}
         initialMode={authMode}
-      />
+      /> */}
 
       <SubscriptionModal
         isOpen={showSubscriptionModal}

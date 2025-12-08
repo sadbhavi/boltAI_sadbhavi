@@ -6,6 +6,7 @@ interface AuthSystemProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginSuccess: () => void;
+  initialMode?: 'login' | 'signup';
 }
 
 interface LoginData {
@@ -19,8 +20,8 @@ interface LoginData {
   language: string;
 }
 
-const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess }) => {
-  const [mode, setMode] = useState<'login' | 'signup' | 'forgot' | 'otp'>('login');
+const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess, initialMode = 'login' }) => {
+  const [mode, setMode] = useState<'login' | 'signup' | 'forgot' | 'otp'>(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,7 +29,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
   const [otpTimer, setOtpTimer] = useState(0);
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
-  
+
   const [loginData, setLoginData] = useState<LoginData>({
     email: '',
     phone: '',
@@ -80,7 +81,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
     const hasLower = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
     const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    
+
     return minLength && hasUpper && hasLower && hasNumber && hasSpecial;
   };
 
@@ -134,7 +135,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
     try {
       // Simulate OTP verification
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       if (loginData.otp === '123456') { // Demo OTP
         onLoginSuccess();
         onClose();
@@ -151,7 +152,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isBlocked) {
       setError('Too many failed attempts. Please try again in 5 minutes.');
       return;
@@ -166,7 +167,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
         if (!loginData.fullName.trim()) {
           throw new Error('Full name is required');
         }
-        
+
         if (loginData.loginMethod === 'email') {
           if (!loginData.email || !loginData.password) {
             throw new Error('Email and password are required');
@@ -184,9 +185,9 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
           loginData.password,
           loginData.fullName
         );
-        
+
         if (error) throw error;
-        
+
         if (loginData.loginMethod === 'phone') {
           setMode('otp');
           await sendOTP();
@@ -345,9 +346,8 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
                 <button
                   type="button"
                   onClick={() => setLoginData({ ...loginData, loginMethod: 'email' })}
-                  className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-md transition-colors ${
-                    loginData.loginMethod === 'email' ? 'bg-white shadow-sm' : ''
-                  }`}
+                  className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-md transition-colors ${loginData.loginMethod === 'email' ? 'bg-white shadow-sm' : ''
+                    }`}
                 >
                   <Mail className="w-4 h-4" />
                   <span className="text-sm font-medium">Email</span>
@@ -355,9 +355,8 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
                 <button
                   type="button"
                   onClick={() => setLoginData({ ...loginData, loginMethod: 'phone' })}
-                  className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-md transition-colors ${
-                    loginData.loginMethod === 'phone' ? 'bg-white shadow-sm' : ''
-                  }`}
+                  className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-md transition-colors ${loginData.loginMethod === 'phone' ? 'bg-white shadow-sm' : ''
+                    }`}
                 >
                   <Phone className="w-4 h-4" />
                   <span className="text-sm font-medium">Phone</span>
@@ -393,13 +392,12 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
                   <input
                     type={loginData.loginMethod === 'email' ? 'email' : 'tel'}
                     value={loginData.loginMethod === 'email' ? loginData.email : loginData.phone}
-                    onChange={(e) => setLoginData({ 
-                      ...loginData, 
-                      [loginData.loginMethod === 'email' ? 'email' : 'phone']: e.target.value 
+                    onChange={(e) => setLoginData({
+                      ...loginData,
+                      [loginData.loginMethod === 'email' ? 'email' : 'phone']: e.target.value
                     })}
-                    className={`w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                      loginData.loginMethod === 'phone' ? 'pl-12' : ''
-                    }`}
+                    className={`w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent ${loginData.loginMethod === 'phone' ? 'pl-12' : ''
+                      }`}
                     placeholder={loginData.loginMethod === 'email' ? 'Enter your email' : 'Enter 10-digit mobile number'}
                     required
                   />
@@ -466,10 +464,10 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
                 disabled={loading || isBlocked}
                 className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-rose-600 transition-all duration-200 disabled:opacity-50"
               >
-                {loading ? 'Please wait...' : 
-                 mode === 'login' ? 'Sign In' : 
-                 mode === 'signup' ? 'Create Account' : 
-                 'Reset Password'}
+                {loading ? 'Please wait...' :
+                  mode === 'login' ? 'Sign In' :
+                    mode === 'signup' ? 'Create Account' :
+                      'Reset Password'}
               </button>
             </form>
           </>
@@ -496,7 +494,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
               </div>
             </>
           )}
-          
+
           {mode === 'signup' && (
             <div className="text-stone-600 text-sm">
               Already have an account?{' '}
@@ -508,7 +506,7 @@ const AuthSystem: React.FC<AuthSystemProps> = ({ isOpen, onClose, onLoginSuccess
               </button>
             </div>
           )}
-          
+
           {(mode === 'forgot' || mode === 'otp') && (
             <button
               onClick={() => setMode('login')}

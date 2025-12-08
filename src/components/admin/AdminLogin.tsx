@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
 interface AdminLoginProps {
   onSuccess: () => void;
@@ -6,17 +7,27 @@ interface AdminLoginProps {
 }
 
 const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin123') {
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error } = await signIn(email, password);
+      if (error) {
+        throw error;
+      }
       onSuccess();
-      setPassword('');
-      setError('');
-    } else {
-      setError('Invalid password');
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,27 +38,44 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
         className="bg-white p-6 rounded-xl w-80 space-y-4 shadow-lg"
       >
         <h2 className="text-xl font-semibold text-center">Admin Login</h2>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-stone-300 rounded-lg p-2"
-          placeholder="Password"
-        />
+        <div>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-stone-300 rounded-lg p-2"
+            placeholder="admin@example.com"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-stone-300 rounded-lg p-2"
+            placeholder="Password"
+            required
+          />
+        </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-2 rounded-lg border border-stone-300"
+            disabled={loading}
+            className="flex-1 py-2 rounded-lg border border-stone-300 hover:bg-stone-50"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 py-2 rounded-lg bg-stone-800 text-white"
+            disabled={loading}
+            className="flex-1 py-2 rounded-lg bg-stone-800 text-white hover:bg-stone-900 disabled:opacity-50"
           >
-            Login
+            {loading ? '...' : 'Login'}
           </button>
         </div>
       </form>
