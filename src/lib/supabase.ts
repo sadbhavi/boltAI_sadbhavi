@@ -25,7 +25,7 @@ const MOCK_BLOG_POSTS: BlogPost[] = [
       <p>Furthermore, research indicates that mindfulness can decrease the cell volume in the amygdala, which is responsible for fear, anxiety, and stress. This change correlates with a reduction in stress levels reported by participants.</p>
     `,
     featured_image: 'https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg',
-    author_name: 'Dr. Sarah Chen',
+    author_name: 'Dr. Abhishek Kumar',
     category_id: 'wellness',
     status: 'published',
     is_featured: true,
@@ -50,7 +50,7 @@ const MOCK_BLOG_POSTS: BlogPost[] = [
       <p>A yoga practitioner's favorite, this involves blocking one nostril at a time to channel airflow and balance the brain's hemispheres.</p>
     `,
     featured_image: 'https://images.pexels.com/photos/3759657/pexels-photo-3759657.jpeg',
-    author_name: 'Maya Patel',
+    author_name: 'Dr. Bipin Kumar Yadav',
     category_id: 'meditation',
     status: 'published',
     is_featured: false,
@@ -74,7 +74,7 @@ const MOCK_BLOG_POSTS: BlogPost[] = [
       <p>Attach your new habit to an existing one. "After I brush my teeth, I will meditate for one minute."</p>
     `,
     featured_image: 'https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg',
-    author_name: 'David Miller',
+    author_name: 'Dr. Paritosh Shukla',
     category_id: 'beginners',
     status: 'published',
     is_featured: true,
@@ -95,7 +95,7 @@ const MOCK_BLOG_POSTS: BlogPost[] = [
       <p>During REM sleep, our brain processes emotional information. Without sufficient REM sleep, our ability to regulate emotions is compromised.</p>
     `,
     featured_image: 'https://images.pexels.com/photos/1405773/pexels-photo-1405773.jpeg',
-    author_name: 'Dr. James Wilson',
+    author_name: 'Dr. Himanshu Gautam',
     category_id: 'sleep',
     status: 'published',
     is_featured: false,
@@ -116,7 +116,7 @@ const MOCK_BLOG_POSTS: BlogPost[] = [
         <p>Grounding techniques, such as the 5-4-3-2-1 method, can bring you back to the present moment and alleviate acute anxiety symptoms.</p>
     `,
     featured_image: 'https://images.pexels.com/photos/1557223/pexels-photo-1557223.jpeg',
-    author_name: 'Elena Rodriguez',
+    author_name: 'Dr. Saurav Kumar',
     category_id: 'mental-health',
     status: 'published',
     is_featured: false,
@@ -137,7 +137,7 @@ const MOCK_BLOG_POSTS: BlogPost[] = [
         <p>Studies have shown that gratitude journaling can lower stress hormones, improve sleep quality, and foster greater empathy and resilience.</p>
     `,
     featured_image: 'https://images.pexels.com/photos/6663/desk-white-black-header.jpg',
-    author_name: 'Michael Chang',
+    author_name: 'Dr. Pankaj Shakya',
     category_id: 'journaling',
     status: 'published',
     is_featured: false,
