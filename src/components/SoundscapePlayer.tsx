@@ -219,7 +219,7 @@ const SoundscapePlayer = () => {
               <AudioPlayer
                 audioUrl={selectedSoundscape.audioUrl}
                 title={selectedSoundscape.title}
-                artist="Serenity Soundscapes"
+                artist="Sadbhavi Soundscapes"
                 image={selectedSoundscape.image}
                 autoPlay={true}
                 onEnded={() => setSelectedSoundscape(null)}

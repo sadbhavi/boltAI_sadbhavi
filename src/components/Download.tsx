@@ -14,9 +14,9 @@ const Download = () => {
                   inner peace
                 </span>
               </h2>
-              
+
               <p className="text-xl text-forest-100 leading-relaxed">
-                Download the Serenity app today and join millions who have transformed their mental wellness. Available on all devices with seamless sync across platforms.
+                Download the Sadbhavi app today and join millions who have transformed their mental wellness. Available on all devices with seamless sync across platforms.
               </p>
             </div>
 
@@ -28,7 +28,7 @@ const Download = () => {
                   <div className="text-lg font-semibold">App Store</div>
                 </div>
               </button>
-              
+
               <button className="bg-black text-white px-6 py-4 rounded-2xl flex items-center space-x-3 hover:bg-gray-900 transition-colors">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-xs">GP</span>
@@ -69,7 +69,7 @@ const Download = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-orange-400 rounded-full opacity-60 blur-xl"></div>
               <div className="absolute -top-4 -left-4 w-20 h-20 bg-sage-400 rounded-full opacity-40 blur-xl"></div>
             </div>
