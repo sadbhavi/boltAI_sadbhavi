@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Leaf, User, Heart } from 'lucide-react';
+import { Menu, X, Leaf, User } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 // import AuthSystem from './auth/AuthSystem';
 import SubscriptionModal from './subscription/SubscriptionModal';
@@ -88,20 +88,16 @@ const Header: React.FC<HeaderProps> = () => {
           </div>
 
           {isMenuOpen && (
-            <div className="md:hidden border-t border-sage-200 py-4">
+            <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-sage-200 shadow-lg py-4 px-4 z-40 transition-all duration-300 ease-in-out">
               <nav className="flex flex-col space-y-4">
-                <a href="#features" className="text-stone-600 hover:text-forest-600 transition-colors">Features</a>
-                <a href="#about" className="text-stone-600 hover:text-forest-600 transition-colors">About</a>
-                <a href="#pricing" className="text-stone-600 hover:text-forest-600 transition-colors">Pricing</a>
-                <a href="#blog" className="text-stone-600 hover:text-forest-600 transition-colors">Blog</a>
-                <a href="#dating" className="text-stone-600 hover:text-forest-600 transition-colors flex items-center space-x-1">
-                  <Heart className="w-4 h-4" />
-                  <span>Dating</span>
-                </a>
-                <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
+                <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Features</a>
+                <a href="#about" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">About</a>
+                <a href="#pricing" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Pricing</a>
+                <a href="#blog" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Blog</a>
+                <a href="#emotional-support" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Support</a>
 
                 {user ? (
-                  <div className="space-y-4">
+                  <div className="space-y-4 pt-2">
                     <div className="flex items-center space-x-2">
                       <User className="w-5 h-5 text-stone-600" />
                       <span className="text-stone-700">{user.email?.split('@')[0]}</span>
@@ -109,27 +105,22 @@ const Header: React.FC<HeaderProps> = () => {
                     </div>
                     {!isPremium && (
                       <button
-                        onClick={() => setShowSubscriptionModal(true)}
-                        className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full hover:from-orange-600 hover:to-pink-600 transition-colors w-fit"
+                        onClick={() => { setShowSubscriptionModal(true); setIsMenuOpen(false); }}
+                        className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full hover:from-orange-600 hover:to-pink-600 transition-colors w-full text-center"
                       >
                         Upgrade to Premium
                       </button>
                     )}
-                    {/* <button
-                      onClick={handleSignOut}
-                      className="text-stone-600 hover:text-forest-600 transition-colors"
+                    <button
+                      onClick={() => { handleSignOut(); setIsMenuOpen(false); }}
+                      className="text-stone-600 hover:text-forest-600 transition-colors w-full text-left py-2"
                     >
                       Sign Out
-                    </button> */}
+                    </button>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {/* <button onClick={() => handleAuthClick('login')} className="text-stone-600 hover:text-forest-600 transition-colors">
-                      Sign In
-                    </button>
-                    <button onClick={() => handleAuthClick('signup')} className="bg-forest-600 text-white px-4 py-2 rounded-full hover:bg-forest-700 transition-colors w-fit">
-                      Get Started
-                    </button> */}
+                  <div className="space-y-4 pt-2">
+                    {/* Auth buttons commented out as per admin-only request */}
                   </div>
                 )}
               </nav>

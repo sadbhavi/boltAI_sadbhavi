@@ -3,7 +3,7 @@ import { Play, Download, Star } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="relative bg-gradient-to-br from-sage-50 via-stone-50 to-orange-50 py-20 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-sage-50 via-stone-50 to-orange-50 py-12 md:py-20 overflow-hidden">
       <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg')] bg-cover bg-center opacity-10"></div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
