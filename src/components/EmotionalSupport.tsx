@@ -39,9 +39,23 @@ const EmotionalSupport = () => {
   const [messageCount, setMessageCount] = useState(() => {
     try {
       const stored = localStorage.getItem('messageCount');
-      return stored ? parseInt(stored, 10) : 0;
+      if (!stored) return 0;
+
+      // Check reset timer on load
+      const lastReset = localStorage.getItem('lastReset');
+      const now = Date.now();
+      const RESET_PERIOD = 12 * 60 * 60 * 1000; // 12 hours
+
+      if (!lastReset || (now - parseInt(lastReset, 10)) > RESET_PERIOD) {
+        // Reset if time passed or no timestamp
+        localStorage.setItem('lastReset', now.toString());
+        localStorage.setItem('messageCount', '0');
+        return 0;
+      }
+
+      return parseInt(stored, 10);
     } catch (e) {
-      console.warn('Storage access allowed:', e);
+      console.warn('Storage access restricted:', e);
       return 0;
     }
   });
@@ -53,7 +67,14 @@ const EmotionalSupport = () => {
 
   // Persist usage info
   useEffect(() => {
-    localStorage.setItem('messageCount', messageCount.toString());
+    try {
+      localStorage.setItem('messageCount', messageCount.toString());
+      if (!localStorage.getItem('lastReset')) {
+        localStorage.setItem('lastReset', Date.now().toString());
+      }
+    } catch (e) {
+      // Ignore storage errors
+    }
   }, [messageCount]);
 
   // Auto-scroll to bottom of messages
@@ -115,9 +136,22 @@ const EmotionalSupport = () => {
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
 
-    if (!isPremium && messageCount >= 1000) {
-      setShowSubscriptionModal(true);
-      return;
+    if (!isPremium) {
+      // Check for reset before enforcing
+      const lastReset = localStorage.getItem('lastReset');
+      const now = Date.now();
+      const RESET_PERIOD = 12 * 60 * 60 * 1000;
+
+      if (lastReset && (now - parseInt(lastReset, 10)) > RESET_PERIOD) {
+        // Time to reset
+        setMessageCount(0);
+        localStorage.setItem('messageCount', '0');
+        localStorage.setItem('lastReset', now.toString());
+      } else if (messageCount >= 30) {
+        alert("You've reached your free message limit (30 messages). Please try again in 12 hours or upgrade to Premium for unlimited chat.");
+        setShowSubscriptionModal(true);
+        return;
+      }
     }
 
     const userMessageText = newMessage.trim();
