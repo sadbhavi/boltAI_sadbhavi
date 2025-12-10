@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Phone, Heart, Shield, Clock, User, Send, Mic, MicOff, PhoneCall, Calendar, Star, CheckCircle, Users, Globe, Loader2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import SubscriptionModal from './subscription/SubscriptionModal';
-import { sendMessageToGemini, ChatMessage } from '../lib/apis/gemini';
+import { sendMessageToOpenAI, ChatMessage } from '../lib/apis/openai';
 
 interface Message {
   id: string;
@@ -30,15 +30,20 @@ const EmotionalSupport = () => {
   const [callSession, setCallSession] = useState<CallSession | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [geminiHistory, setGeminiHistory] = useState<ChatMessage[]>([]);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [supportRating, setSupportRating] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [messageCount, setMessageCount] = useState(() => {
-    const stored = localStorage.getItem('messageCount');
-    return stored ? parseInt(stored, 10) : 0;
+    try {
+      const stored = localStorage.getItem('messageCount');
+      return stored ? parseInt(stored, 10) : 0;
+    } catch (e) {
+      console.warn('Storage access allowed:', e);
+      return 0;
+    }
   });
 
   const { isPremium } = useAuth();
@@ -67,8 +72,8 @@ const EmotionalSupport = () => {
         type: 'text'
       };
       setMessages([welcomeMessage]);
-      // Add the welcome message to Gemini history as model response
-      setGeminiHistory([{
+      // Add the welcome message to history as model response
+      setChatHistory([{
         role: 'model',
         parts: [{ text: welcomeMessage.text }]
       }]);
@@ -110,7 +115,7 @@ const EmotionalSupport = () => {
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
 
-    if (!isPremium && messageCount >= 100) {
+    if (!isPremium && messageCount >= 1000) {
       setShowSubscriptionModal(true);
       return;
     }
@@ -130,8 +135,8 @@ const EmotionalSupport = () => {
     setIsTyping(true);
 
     try {
-      // Call Gemini API with conversation history
-      const response = await sendMessageToGemini(userMessageText, geminiHistory);
+      // Call OpenAI API with conversation history
+      const response = await sendMessageToOpenAI(userMessageText, chatHistory);
 
       if (response.success) {
         const supportMessage: Message = {
@@ -144,8 +149,8 @@ const EmotionalSupport = () => {
 
         setMessages(prev => [...prev, supportMessage]);
 
-        // Update Gemini conversation history
-        setGeminiHistory(prev => [
+        // Update conversation history
+        setChatHistory(prev => [
           ...prev,
           { role: 'user', parts: [{ text: userMessageText }] },
           { role: 'model', parts: [{ text: response.message }] }
@@ -160,7 +165,7 @@ const EmotionalSupport = () => {
           type: 'text'
         };
         setMessages(prev => [...prev, fallbackMessage]);
-        console.error('Gemini API error:', response.error);
+        console.error('OpenAI API error:', response.error);
       }
     } catch (error) {
       console.error('Error sending message:', error);
