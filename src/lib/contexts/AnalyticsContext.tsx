@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Session, AuthChangeEvent } from '@supabase/supabase-js';
 import { supabase } from '../supabase';
 
 interface AnalyticsContextType {
@@ -10,16 +11,16 @@ const AnalyticsContext = createContext<AnalyticsContextType | undefined>(undefin
 
 export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const location = useLocation();
-    const [session, setSession] = useState<any>(null);
+    const [session, setSession] = useState<Session | null>(null);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
             setSession(session);
         });
 
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
+        } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
             setSession(session);
         });
 

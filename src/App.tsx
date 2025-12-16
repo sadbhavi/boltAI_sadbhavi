@@ -4,7 +4,7 @@ import PublicLayout from './components/layouts/PublicLayout';
 import AdminLayout from './components/layouts/AdminLayout';
 import Home from './components/Home';
 import LoginPage from './components/auth/LoginPage';
-import Profile from './components/Profile';
+import UserProfile from './components/UserProfile';
 import { AnalyticsProvider } from './lib/contexts/AnalyticsContext';
 import BlogIndex from './components/blog/BlogIndex';
 import BlogPostPage from './components/blog/BlogPost';
@@ -32,7 +32,7 @@ function App() {
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<UserProfile />} />
             <Route path="blog" element={<BlogIndex />} />
             <Route path="blog/:slug" element={<BlogPostPage />} />
             {/* Onboarding route removed */}
