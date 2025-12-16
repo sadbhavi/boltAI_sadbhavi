@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Volume2, Timer, Shuffle } from 'lucide-react';
+import { useAnalytics } from '../lib/contexts/AnalyticsContext';
 import AudioPlayer from './AudioPlayer';
 
 interface Soundscape {
@@ -13,6 +14,7 @@ interface Soundscape {
 }
 
 const SoundscapePlayer = () => {
+  const { trackEvent } = useAnalytics();
   const [soundscapes] = useState<Soundscape[]>([
     {
       id: '1',
@@ -176,7 +178,10 @@ const SoundscapePlayer = () => {
             <div
               key={soundscape.id}
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group cursor-pointer"
-              onClick={() => setSelectedSoundscape(soundscape)}
+              onClick={() => {
+                trackEvent('play_soundscape', 'content', 'click', soundscape.title);
+                setSelectedSoundscape(soundscape);
+              }}
             >
               <div className="relative">
                 <img

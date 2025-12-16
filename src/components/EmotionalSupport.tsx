@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Phone, Heart, Shield, Clock, User, Send, Mic, MicOff, PhoneCall, Calendar, Star, CheckCircle, Users, Globe, Loader2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useAnalytics } from '../lib/contexts/AnalyticsContext';
 import SubscriptionModal from './subscription/SubscriptionModal';
 import { sendMessageToOpenAI, ChatMessage } from '../lib/apis/openai';
 
@@ -55,12 +56,13 @@ const EmotionalSupport = () => {
 
       return parseInt(stored, 10);
     } catch (e) {
-      console.warn('Storage access restricted:', e);
+      // console.warn('Storage access restricted:', e);
       return 0;
     }
   });
 
   const { isPremium } = useAuth();
+  const { trackEvent } = useAnalytics();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
@@ -127,6 +129,7 @@ const EmotionalSupport = () => {
   }, [callSession?.duration, callSession?.status, isPremium]);
 
   const startChat = () => {
+    trackEvent('start_chat', 'support', 'click');
     setShowChat(true);
     if (chatInputRef.current) {
       chatInputRef.current.focus();
@@ -199,10 +202,9 @@ const EmotionalSupport = () => {
           type: 'text'
         };
         setMessages(prev => [...prev, fallbackMessage]);
-        console.error('OpenAI API error:', response.error);
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "Kuch technical issue aa gaya hai. But don't worry, main yahan hoon. Thoda wait karo aur phir se try karo. 🙏",
@@ -217,6 +219,7 @@ const EmotionalSupport = () => {
   };
 
   const startAudioCall = () => {
+    trackEvent('start_call', 'support', 'click', 'phone');
     if (typeof window !== 'undefined') {
       window.location.href = 'tel:6387153863';
     }

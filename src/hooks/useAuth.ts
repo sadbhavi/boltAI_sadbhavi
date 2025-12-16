@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
-import { User } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
-import { authAPI, profileAPI } from '../lib/api';
+import {
+  User,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signOut as firebaseSignOut,
+  sendPasswordResetEmail
+} from 'firebase/auth';
+import { auth, googleProvider } from '../lib/firebase';
+import { profileAPI } from '../lib/api';
 import type { Profile } from '../lib/supabase';
+import { updateProfile as firebaseUpdateProfile } from 'firebase/auth';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -10,36 +19,27 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        loadProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await loadProfile(session.user.id);
+    // Listen for Firebase Auth changes
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      if (firebaseUser) {
+        loadProfile(firebaseUser.uid);
       } else {
         setProfile(null);
         setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   const loadProfile = async (userId: string) => {
     try {
       const { data, error } = await profileAPI.getProfile(userId);
-      if (error) throw error;
+      if (error) {
+        // If profile doesn't exist, we might want to create one on the fly or just ignore
+        console.warn('Error loading profile (fetched from Supabase/Mock):', error);
+      }
       setProfile(data);
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -49,35 +49,60 @@ export function useAuth() {
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const { data, error } = await authAPI.signUp(email, password, fullName);
-    return { data, error };
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      if (fullName && result.user) {
+        await firebaseUpdateProfile(result.user, { displayName: fullName });
+      }
+      return { data: result.user, error: null };
+    } catch (error: any) {
+      return { data: null, error };
+    }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await authAPI.signIn(email, password);
-    return { data, error };
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      return { data: result.user, error: null };
+    } catch (error: any) {
+      return { data: null, error };
+    }
   };
 
   const signInWithGoogle = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
-    return { data, error };
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      return { data: result.user, error: null };
+    } catch (error: any) {
+      console.error("Google Sign-In Error:", error);
+      return { data: null, error };
+    }
   };
 
   const signOut = async () => {
-    const { error } = await authAPI.signOut();
-    if (!error) {
+    try {
+      await firebaseSignOut(auth);
       setUser(null);
       setProfile(null);
+      return { error: null };
+    } catch (error: any) {
+      return { error };
     }
-    return { error };
+  };
+
+  const resetPassword = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { data: true, error: null };
+    } catch (error: any) {
+      return { data: false, error };
+    }
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return { data: null, error: new Error('No user logged in') };
-    
-    const { data, error } = await profileAPI.updateProfile(user.id, updates);
+
+    const { data, error } = await profileAPI.updateProfile(user.uid, updates);
     if (!error && data) {
       setProfile(data);
     }
@@ -92,6 +117,7 @@ export function useAuth() {
     signIn,
     signInWithGoogle,
     signOut,
+    resetPassword,
     updateProfile,
     isAuthenticated: !!user,
     isPremium: profile?.subscription_status === 'active' || profile?.subscription_status === 'trial',

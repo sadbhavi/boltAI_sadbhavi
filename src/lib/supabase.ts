@@ -232,6 +232,7 @@ function createMockSupabaseClient() {
       getSession: () => Promise.resolve({ data: { session: currentSession }, error: null }),
       getUser: () => Promise.resolve({ data: { user: currentSession?.user || null }, error: null }),
       signUp: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      signInWithOAuth: () => Promise.resolve({ data: null, error: { message: 'Supabase OAuth not configured' } }),
       signInWithPassword: ({ email, password }: any) => {
         if (email === 'akkiibaghel2@gmail.com' && password === 'Mahendrasingh2@') {
           currentSession = {

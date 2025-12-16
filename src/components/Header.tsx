@@ -1,49 +1,86 @@
 import React, { useState } from 'react';
 import { Menu, X, Leaf, User } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-// import AuthSystem from './auth/AuthSystem';
 import SubscriptionModal from './subscription/SubscriptionModal';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  // const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const { user, signOut, isPremium } = useAuth();
-
-  // const handleAuthClick = (mode: 'login' | 'signup') => {
-  //   setAuthMode(mode);
-  //   setShowAuthModal(true);
-  // };
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
   };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault();
+    setIsMenuOpen(false);
+
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: sectionId } });
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  // Effect to handle scroll after navigation from another page
+  React.useEffect(() => {
+    if (location.state && (location.state as any).scrollTo) {
+      const sectionId = (location.state as any).scrollTo;
+      const element = document.getElementById(sectionId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Small delay to ensure render
+      }
+      // Clear state to prevent scrolling on refresh (optional but good practice)
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
+  const navLinks = [
+    { name: 'Features', href: 'features' },
+    { name: 'About', href: 'about' },
+    { name: 'Pricing', href: 'pricing' },
+    { name: 'Blog', href: 'blog', isRoute: true },
+    { name: 'Support', href: 'emotional-support' },
+  ];
 
   return (
     <>
       <header className="bg-white/95 backdrop-blur-sm border-b border-sage-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-forest-600 to-sage-500 rounded-full flex items-center justify-center">
                 <Leaf className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-bold text-forest-800">Sadbhavi</span>
-            </div>
+            </Link>
 
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-stone-600 hover:text-forest-600 transition-colors">Features</a>
-              <a href="#about" className="text-stone-600 hover:text-forest-600 transition-colors">About</a>
-              <a href="#pricing" className="text-stone-600 hover:text-forest-600 transition-colors">Pricing</a>
-              <a href="#blog" className="text-stone-600 hover:text-forest-600 transition-colors">Blog</a>
-              {/* <a href="#dating" className="text-stone-600 hover:text-forest-600 transition-colors flex items-center space-x-1">
-                <Heart className="w-4 h-4" />
-                <span>Dating</span>
-              </a> */}
-              <a href="#emotional-support" className="text-stone-600 hover:text-forest-600 transition-colors">Support</a>
+              {navLinks.map((link) => (
+                link.isRoute ? (
+                  <Link key={link.name} to={`/${link.href}`} className="text-stone-600 hover:text-forest-600 transition-colors">{link.name}</Link>
+                ) : (
+                  <a
+                    key={link.name}
+                    href={`#${link.href}`}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className="text-stone-600 hover:text-forest-600 transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                )
+              ))}
 
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -69,12 +106,13 @@ const Header: React.FC<HeaderProps> = () => {
                 </div>
               ) : (
                 <div className="flex items-center space-x-4">
-                  {/* <button onClick={() => handleAuthClick('login')} className="text-stone-600 hover:text-forest-600 transition-colors">
+                  <Link
+                    to="/login"
+                    className="text-stone-600 hover:text-forest-600 transition-colors font-medium"
+                  >
                     Sign In
-                  </button> */}
-                  {/* <button onClick={() => handleAuthClick('signup')} className="bg-forest-600 text-white px-4 py-2 rounded-full hover:bg-forest-700 transition-colors">
-                    Get Started
-                  </button> */}
+                  </Link>
+                  {/* Get Started button removed */}
                 </div>
               )}
             </nav>
@@ -90,11 +128,27 @@ const Header: React.FC<HeaderProps> = () => {
           {isMenuOpen && (
             <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-sage-200 shadow-lg py-4 px-4 z-40 transition-all duration-300 ease-in-out">
               <nav className="flex flex-col space-y-4">
-                <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Features</a>
-                <a href="#about" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">About</a>
-                <a href="#pricing" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Pricing</a>
-                <a href="#blog" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Blog</a>
-                <a href="#emotional-support" onClick={() => setIsMenuOpen(false)} className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100">Support</a>
+                {navLinks.map((link) => (
+                  link.isRoute ? (
+                    <Link
+                      key={link.name}
+                      to={`/${link.href}`}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100"
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a
+                      key={link.name}
+                      href={`#${link.href}`}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      className="text-stone-600 hover:text-forest-600 transition-colors py-2 border-b border-gray-100"
+                    >
+                      {link.name}
+                    </a>
+                  )
+                ))}
 
                 {user ? (
                   <div className="space-y-4 pt-2">
@@ -120,7 +174,14 @@ const Header: React.FC<HeaderProps> = () => {
                   </div>
                 ) : (
                   <div className="space-y-4 pt-2">
-                    {/* Auth buttons commented out as per admin-only request */}
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block text-stone-600 hover:text-forest-600 transition-colors w-full text-left py-2 border-b border-gray-100"
+                    >
+                      Sign In
+                    </Link>
+                    {/* Get Started button removed */}
                   </div>
                 )}
               </nav>

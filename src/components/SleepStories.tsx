@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Play, Moon, Star, Clock, User } from 'lucide-react';
+import { useAnalytics } from '../lib/contexts/AnalyticsContext';
 import AudioPlayer from './AudioPlayer';
 
 interface SleepStory {
@@ -15,6 +16,7 @@ interface SleepStory {
 }
 
 const SleepStories = () => {
+  const { trackEvent } = useAnalytics();
   const [sleepStories] = useState<SleepStory[]>([
     {
       id: '1',
@@ -95,8 +97,8 @@ const SleepStories = () => {
     { id: 'classic', name: 'Classic', icon: User }
   ];
 
-  const filteredStories = activeCategory === 'all' 
-    ? sleepStories 
+  const filteredStories = activeCategory === 'all'
+    ? sleepStories
     : sleepStories.filter(s => s.category === activeCategory);
 
   return (
@@ -122,11 +124,10 @@ const SleepStories = () => {
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 ${
-                  activeCategory === category.id
-                    ? 'bg-forest-600 text-white shadow-lg'
-                    : 'bg-white text-stone-600 hover:bg-stone-100'
-                }`}
+                className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 ${activeCategory === category.id
+                  ? 'bg-forest-600 text-white shadow-lg'
+                  : 'bg-white text-stone-600 hover:bg-stone-100'
+                  }`}
               >
                 <IconComponent className="w-4 h-4" />
                 <span>{category.name}</span>
@@ -141,7 +142,10 @@ const SleepStories = () => {
             <div
               key={story.id}
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group cursor-pointer"
-              onClick={() => setSelectedStory(story)}
+              onClick={() => {
+                trackEvent('play_sleep_story', 'content', 'click', story.title);
+                setSelectedStory(story);
+              }}
             >
               <div className="relative">
                 <img
@@ -165,7 +169,7 @@ const SleepStories = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-stone-800 mb-2 group-hover:text-forest-600 transition-colors">
                   {story.title}
@@ -173,7 +177,7 @@ const SleepStories = () => {
                 <p className="text-stone-600 mb-4 leading-relaxed">
                   {story.description}
                 </p>
-                
+
                 <div className="flex items-center justify-between text-sm text-stone-500">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-1">

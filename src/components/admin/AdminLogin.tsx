@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import BackButton from '../common/BackButton';
 
 interface AdminLoginProps {
-  onSuccess: () => void;
-  onClose: () => void;
+  onSuccess?: () => void;
+  onClose?: () => void;
 }
 
 const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
@@ -12,6 +14,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,11 +26,23 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
       if (error) {
         throw error;
       }
-      onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/admin/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Invalid credentials');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      navigate('/');
     }
   };
 
@@ -37,7 +52,10 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-xl w-80 space-y-4 shadow-lg"
       >
-        <h2 className="text-xl font-semibold text-center">Admin Login</h2>
+        <div className="absolute top-4 left-4">
+          <BackButton to="/" />
+        </div>
+        <h2 className="text-xl font-semibold text-center mt-6">Admin Login</h2>
         <div>
           <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
           <input
@@ -64,7 +82,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
         <div className="flex space-x-2 pt-2">
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             disabled={loading}
             className="flex-1 py-2 rounded-lg border border-stone-300 hover:bg-stone-50"
           >

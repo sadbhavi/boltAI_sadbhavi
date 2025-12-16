@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { blogAPI } from '../../lib/apis/blog';
 import type { BlogPost } from '../../lib/supabase';
 import { Calendar, User, ArrowRight, Search } from 'lucide-react';
+import BackButton from '../common/BackButton';
 
 const BlogIndex: React.FC = () => {
     const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -60,7 +61,11 @@ const BlogIndex: React.FC = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+                <BackButton to="/" label="Back to Home" />
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Categories */}
                 <div className="flex justify-center flex-wrap gap-3 mb-16">
                     <button

@@ -1,63 +1,76 @@
-import type { PostgrestError } from '@supabase/supabase-js';
 import { supabase } from '../supabase';
 
+export interface AnalyticsStats {
+  pageViews: any[];
+  events: any[];
+  topPages: { path: string; count: number }[];
+  topFeatures: { event_name: string; count: number }[];
+  dailyActivity: { date: string; views: number; events: number }[];
+}
+
 export const analyticsAPI = {
-  async recordSession(userId: string, contentId: string, sessionType: string, durationSeconds: number, completed: boolean) {
-    const { data, error } = await supabase
-      .from('user_sessions')
-      .insert({
-        user_id: userId,
-        content_id: contentId,
-        session_type: sessionType,
-        duration_seconds: durationSeconds,
-        completed,
-      })
-      .select()
-      .single();
-    return { data, error } as { data: unknown; error: PostgrestError | null };
-  },
+  getStats: async (): Promise<AnalyticsStats> => {
+    // This is a basic client-side aggregation.
+    // For large datasets, this should be moved to a Postgres View or RPC function.
 
-  async getUserStats(userId: string) {
-    const { data, error } = await supabase
-      .from('user_stats')
+    // Fetch Page Views
+    const { data: pageViews } = await supabase
+      .from('analytics_page_views')
       .select('*')
-      .eq('user_id', userId)
-      .single();
-    return { data, error } as { data: unknown; error: PostgrestError | null };
-  },
+      .order('created_at', { ascending: false });
 
-  async updateUserStats(userId: string) {
-    const { data, error } = await supabase.rpc('update_user_stats', {
-      user_id: userId,
-    });
-    return { data, error } as { data: unknown; error: PostgrestError | null };
-  },
-
-  async recordMood(userId: string, moodScore: number, emotions?: string[], notes?: string) {
-    const { data, error } = await supabase
-      .from('mood_tracking')
-      .upsert({
-        user_id: userId,
-        mood_score: moodScore,
-        emotions,
-        notes,
-        tracking_date: new Date().toISOString().split('T')[0],
-      })
-      .select()
-      .single();
-    return { data, error } as { data: unknown; error: PostgrestError | null };
-  },
-
-  async getMoodHistory(userId: string, days: number = 30) {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const { data, error } = await supabase
-      .from('mood_tracking')
+    // Fetch Events
+    const { data: events } = await supabase
+      .from('analytics_events')
       .select('*')
-      .eq('user_id', userId)
-      .gte('tracking_date', startDate.toISOString().split('T')[0])
-      .order('tracking_date', { ascending: false });
-    return { data, error } as { data: unknown; error: PostgrestError | null };
-  },
+      .order('created_at', { ascending: false });
+
+    const views = pageViews || [];
+    const evts = events || [];
+
+    // Aggregations
+    const topPagesMap = views.reduce((acc: any, curr: any) => {
+      acc[curr.path] = (acc[curr.path] || 0) + 1;
+      return acc;
+    }, {});
+
+    const topPages = Object.entries(topPagesMap)
+      .map(([path, count]) => ({ path, count: count as number }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    const topFeaturesMap = evts.reduce((acc: any, curr: any) => {
+      const key = curr.event_name; // or curr.label if you want more granulariy
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+
+    const topFeatures = Object.entries(topFeaturesMap)
+      .map(([event_name, count]) => ({ event_name, count: count as number }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    // Daily Activity (Last 7 days)
+    const dailyMap: any = {};
+    const processDate = (dateStr: string, type: 'views' | 'events') => {
+      const date = new Date(dateStr).toLocaleDateString();
+      if (!dailyMap[date]) dailyMap[date] = { date, views: 0, events: 0 };
+      dailyMap[date][type]++;
+    };
+
+    views.forEach((v: any) => processDate(v.created_at, 'views'));
+    evts.forEach((e: any) => processDate(e.created_at, 'events'));
+
+    const dailyActivity = Object.values(dailyMap).sort((a: any, b: any) =>
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    ) as { date: string; views: number; events: number }[];
+
+    return {
+      pageViews: views,
+      events: evts,
+      topPages,
+      topFeatures,
+      dailyActivity
+    };
+  }
 };

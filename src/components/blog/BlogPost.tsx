@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { blogAPI } from '../../lib/apis/blog';
 import type { BlogPost } from '../../lib/supabase';
-import { Calendar, User, Clock, ChevronLeft, Share2 } from 'lucide-react';
+import { Calendar, User, Clock, Share2 } from 'lucide-react';
+import BackButton from '../common/BackButton';
 
 const BlogPostPage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -87,10 +88,7 @@ const BlogPostPage: React.FC = () => {
                 <div className="bg-white rounded-3xl p-8 md:p-12 shadow-xl">
                     {/* Back Link */}
                     <div className="mb-8 flex justify-between items-center">
-                        <Link to="/blog" className="flex items-center space-x-2 text-stone-500 hover:text-forest-600 transition-colors">
-                            <ChevronLeft className="w-5 h-5" />
-                            <span>Back to Articles</span>
-                        </Link>
+                        <BackButton to="/blog" label="Back to Articles" />
                         <button className="text-stone-500 hover:text-forest-600 p-2 rounded-full hover:bg-stone-50 transition-colors">
                             <Share2 className="w-5 h-5" />
                         </button>
