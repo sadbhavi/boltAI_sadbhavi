@@ -101,7 +101,7 @@ export async function sendMessageToOpenAI(
         }
 
         const data = await response.json();
-        console.log('OpenAI raw response:', data);
+
 
         // Standard Chat Completion response parsing
         const responseText = data.choices?.[0]?.message?.content;
