@@ -41,10 +41,14 @@ export const blogAPI = {
       if (filters?.limit) params.append('limit', String(filters.limit));
 
       const res = await fetch(`${API_URL}?${params.toString()}`);
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error('API Error Response:', text);
+        throw new Error(`API Error: ${res.status} ${res.statusText}`);
+      }
+
       const json = await res.json();
-
-      if (!res.ok) throw new Error(json.error?.message || 'Failed to fetch posts');
-
       return { data: json.data, error: null };
     } catch (error: any) {
       console.error('Fetch error:', error);
