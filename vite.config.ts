@@ -41,6 +41,13 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   server: {
-    allowedHosts: ['sadbhavi.com', 'www.sadbhavi.com']
+    allowedHosts: ['sadbhavi.com', 'www.sadbhavi.com'],
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   }
 });
