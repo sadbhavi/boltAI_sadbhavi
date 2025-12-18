@@ -5,6 +5,8 @@ export interface Profile {
   id: string;
   email: string;
   full_name?: string;
+  phone?: string;
+  date_of_birth?: string;
   avatar_url?: string;
   subscription_status: 'free' | 'trial' | 'active' | 'cancelled' | 'expired';
   subscription_plan: 'free' | 'monthly' | 'annual' | 'family' | 'lifetime';

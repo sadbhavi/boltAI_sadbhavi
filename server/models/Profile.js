@@ -12,6 +12,13 @@ const profileSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    phone: {
+        type: String,
+        trim: true
+    },
+    date_of_birth: {
+        type: Date
+    },
     avatar_url: String,
     subscription_status: {
         type: String,

@@ -4,19 +4,34 @@ import { useAuth } from '../hooks/useAuth';
 const Profile: React.FC = () => {
     const { user, profile, signOut, updateProfile, resetPassword } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
-    const [newName, setNewName] = useState('');
+    const [editData, setEditData] = useState({
+        full_name: '',
+        phone: '',
+        date_of_birth: ''
+    });
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     React.useEffect(() => {
-        if (user?.displayName) {
-            setNewName(user.displayName);
+        if (profile) {
+            setEditData({
+                full_name: profile.full_name || '',
+                phone: profile.phone || '',
+                date_of_birth: profile.date_of_birth ? new Date(profile.date_of_birth).toISOString().split('T')[0] : ''
+            });
+        } else if (user?.displayName) {
+            setEditData(prev => ({ ...prev, full_name: user.displayName || '' }));
         }
-    }, [user]);
+    }, [user, profile]);
 
     const handleUpdateProfile = async () => {
-        if (!newName.trim()) return;
+        if (!editData.full_name.trim()) return;
 
-        const { error } = await updateProfile({ full_name: newName });
+        const { error } = await updateProfile({
+            full_name: editData.full_name,
+            phone: editData.phone,
+            date_of_birth: editData.date_of_birth
+        });
+
         if (error) {
             setMessage({ type: 'error', text: 'Failed to update profile' });
         } else {
@@ -55,30 +70,66 @@ const Profile: React.FC = () => {
 
                     <div className="flex-1 text-center md:text-left">
                         {isEditing ? (
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    type="text"
-                                    value={newName}
-                                    onChange={(e) => setNewName(e.target.value)}
-                                    className="px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-forest-500 outline-none"
-                                />
-                                <button onClick={handleUpdateProfile} className="px-4 py-2 bg-forest-600 text-white rounded-lg hover:bg-forest-700">Save</button>
-                                <button onClick={() => setIsEditing(false)} className="px-4 py-2 text-stone-500 hover:text-stone-700">Cancel</button>
+                            <div className="space-y-4 max-w-md">
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-1">Full Name</label>
+                                    <input
+                                        type="text"
+                                        value={editData.full_name}
+                                        onChange={(e) => setEditData({ ...editData, full_name: e.target.value })}
+                                        className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-forest-500 outline-none"
+                                        placeholder="Full Name"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-1">Phone Number</label>
+                                    <input
+                                        type="tel"
+                                        value={editData.phone}
+                                        onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                                        className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-forest-500 outline-none"
+                                        placeholder="Phone Number"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-1">Date of Birth</label>
+                                    <input
+                                        type="date"
+                                        value={editData.date_of_birth}
+                                        onChange={(e) => setEditData({ ...editData, date_of_birth: e.target.value })}
+                                        className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-forest-500 outline-none"
+                                    />
+                                </div>
+                                <div className="flex items-center space-x-2 pt-2">
+                                    <button onClick={handleUpdateProfile} className="px-4 py-2 bg-forest-600 text-white rounded-lg hover:bg-forest-700 font-medium">Save Changes</button>
+                                    <button onClick={() => setIsEditing(false)} className="px-4 py-2 text-stone-500 hover:text-stone-700 font-medium">Cancel</button>
+                                </div>
                             </div>
                         ) : (
-                            <div className="flex items-center justify-center md:justify-start space-x-2">
-                                <h2 className="text-2xl font-semibold text-stone-800">{user?.displayName || profile?.full_name || 'User'}</h2>
-                                <button onClick={() => setIsEditing(true)} className="text-forest-600 hover:text-forest-700 text-sm font-medium">
-                                    Edit
-                                </button>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-center md:justify-start space-x-2">
+                                    <h2 className="text-2xl font-semibold text-stone-800">{profile?.full_name || user?.displayName || 'User'}</h2>
+                                    <button onClick={() => setIsEditing(true)} className="text-forest-600 hover:text-forest-700 text-sm font-medium">
+                                        Edit Profile
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-stone-600">
+                                    <div className="flex items-center space-x-2">
+                                        <span className="font-medium text-stone-400 text-sm italic">Phone:</span>
+                                        <span>{profile?.phone || 'Not set'}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <span className="font-medium text-stone-400 text-sm italic">DOB:</span>
+                                        <span>{profile?.date_of_birth ? new Date(profile.date_of_birth).toLocaleDateString() : 'Not set'}</span>
+                                    </div>
+                                </div>
                             </div>
                         )}
-                        <p className="text-stone-500 mt-1">{user?.email}</p>
+                        <p className="text-stone-500 mt-2">{user?.email}</p>
                         <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
                             <span className="px-3 py-1 bg-stone-100 text-stone-600 rounded-full text-sm">
                                 {profile?.subscription_status === 'active' ? 'Premium Member' : 'Free Plan'}
                             </span>
-                            {/* Show joined date if available inside profile or user metadata could be added here */}
                         </div>
                     </div>
                 </div>
