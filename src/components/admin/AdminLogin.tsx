@@ -13,7 +13,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,6 +94,35 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
             className="flex-1 py-2 rounded-lg bg-stone-800 text-white hover:bg-stone-900 disabled:opacity-50"
           >
             {loading ? '...' : 'Login'}
+          </button>
+        </div>
+        <div className="pt-4 border-t border-stone-100 mt-4 text-center">
+          <p className="text-xs text-stone-500 mb-2">Development Only</p>
+          <button
+            type="button"
+            onClick={async () => {
+              setLoading(true);
+              // Hardcoded credentials from user request
+              const { error } = await signUp('akkiibaghel2@gmail.com', 'Mahendrasingh2@', 'Admin User');
+              if (error) {
+                // If already exists, just fill the form
+                if (error.code === 'auth/email-already-in-use') {
+                  setEmail('akkiibaghel2@gmail.com');
+                  setPassword('Mahendrasingh2@');
+                  setError('Account exists. Credentials filled.');
+                } else {
+                  setError(error.message);
+                }
+              } else {
+                setEmail('akkiibaghel2@gmail.com');
+                setPassword('Mahendrasingh2@');
+                setError('Account created! Click Login.');
+              }
+              setLoading(false);
+            }}
+            className="text-xs text-blue-600 hover:text-blue-700 underline"
+          >
+            Auto-Setup Default Admin
           </button>
         </div>
       </form>

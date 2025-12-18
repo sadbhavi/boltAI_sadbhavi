@@ -4,9 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import SubscriptionModal from './subscription/SubscriptionModal';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
-interface HeaderProps { }
-
-const Header: React.FC<HeaderProps> = () => {
+const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const { user, signOut, isPremium } = useAuth();
@@ -47,11 +45,11 @@ const Header: React.FC<HeaderProps> = () => {
   }, [location]);
 
   const navLinks = [
-    { name: 'Features', href: 'features' },
-    { name: 'About', href: 'about' },
-    { name: 'Pricing', href: 'pricing' },
+    { name: 'Features', href: 'features', isRoute: true },
+    { name: 'About', href: 'about', isRoute: true },
+    { name: 'Pricing', href: 'pricing', isRoute: true },
     { name: 'Blog', href: 'blog', isRoute: true },
-    { name: 'Support', href: 'emotional-support' },
+    { name: 'Support', href: 'emotional-support', isRoute: true },
   ];
 
   return (

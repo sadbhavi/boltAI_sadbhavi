@@ -1,9 +1,9 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import PublicLayout from './components/layouts/PublicLayout';
 import AdminLayout from './components/layouts/AdminLayout';
 import Home from './components/Home';
 import LoginPage from './components/auth/LoginPage';
+import SignupPage from './components/auth/SignupPage';
 import UserProfile from './components/UserProfile';
 import { AnalyticsProvider } from './lib/contexts/AnalyticsContext';
 import BlogIndex from './components/blog/BlogIndex';
@@ -12,6 +12,10 @@ import AdminLogin from './components/admin/AdminLogin';
 import BlogPostEditor from './components/admin/BlogPostEditor';
 import BlogPostsList from './components/admin/BlogPostsList';
 import AdminDashboard from './components/admin/AdminDashboard';
+import Features from './components/Features';
+import About from './components/About';
+import Pricing from './components/Pricing';
+import EmotionalSupport from './components/EmotionalSupport';
 
 
 function App() {
@@ -32,9 +36,14 @@ function App() {
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="blog" element={<BlogIndex />} />
             <Route path="blog/:slug" element={<BlogPostPage />} />
+            <Route path="features" element={<Features />} />
+            <Route path="about" element={<About />} />
+            <Route path="pricing" element={<Pricing />} />
+            <Route path="emotional-support" element={<EmotionalSupport />} />
             {/* Onboarding route removed */}
           </Route>
         </Routes>
