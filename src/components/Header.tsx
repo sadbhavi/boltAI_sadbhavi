@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Leaf, User } from 'lucide-react';
+import { Menu, X, Leaf } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import SubscriptionModal from './subscription/SubscriptionModal';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const { user, signOut, isPremium } = useAuth();
+  const { user, profile, signOut, isPremium } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -82,22 +82,18 @@ const Header: React.FC = () => {
 
               {user ? (
                 <div className="flex items-center space-x-4">
-                  {!isPremium && (
-                    <button
-                      onClick={() => setShowSubscriptionModal(true)}
-                      className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full hover:from-orange-600 hover:to-pink-600 transition-colors text-sm font-medium"
-                    >
-                      Upgrade to Premium
-                    </button>
-                  )}
-                  <div className="flex items-center space-x-2">
-                    <User className="w-5 h-5 text-stone-600" />
-                    <span className="text-stone-700">{user.email?.split('@')[0]}</span>
-                    {isPremium && <span className="bg-gold-100 text-gold-800 px-2 py-1 rounded-full text-xs">Premium</span>}
-                  </div>
+                  <Link to="/profile" className="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-stone-50 transition-all group">
+                    <div className="w-9 h-9 bg-gradient-to-br from-forest-600 to-sage-500 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-md group-hover:shadow-lg transition-shadow">
+                      {(profile?.full_name || user?.displayName || user?.email)?.[0]?.toUpperCase() || 'U'}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-stone-800 font-medium text-sm">{profile?.full_name || user?.displayName || user?.email?.split('@')[0]}</span>
+                      {isPremium && <span className="bg-gradient-to-r from-gold-400 to-gold-500 text-gold-900 px-2 py-0.5 rounded-full text-xs font-medium">✨ Premium</span>}
+                    </div>
+                  </Link>
                   <button
                     onClick={handleSignOut}
-                    className="text-stone-600 hover:text-forest-600 transition-colors"
+                    className="text-stone-600 hover:text-forest-600 transition-colors font-medium"
                   >
                     Sign Out
                   </button>
@@ -150,22 +146,22 @@ const Header: React.FC = () => {
 
                 {user ? (
                   <div className="space-y-4 pt-2">
-                    <div className="flex items-center space-x-2">
-                      <User className="w-5 h-5 text-stone-600" />
-                      <span className="text-stone-700">{user.email?.split('@')[0]}</span>
-                      {isPremium && <span className="bg-gold-100 text-gold-800 px-2 py-1 rounded-full text-xs">Premium</span>}
-                    </div>
-                    {!isPremium && (
-                      <button
-                        onClick={() => { setShowSubscriptionModal(true); setIsMenuOpen(false); }}
-                        className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full hover:from-orange-600 hover:to-pink-600 transition-colors w-full text-center"
-                      >
-                        Upgrade to Premium
-                      </button>
-                    )}
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-xl hover:bg-stone-50 transition-all"
+                    >
+                      <div className="w-10 h-10 bg-gradient-to-br from-forest-600 to-sage-500 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
+                        {(profile?.full_name || user?.displayName || user?.email)?.[0]?.toUpperCase() || 'U'}
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-stone-800 font-medium">{profile?.full_name || user?.displayName || user?.email?.split('@')[0]}</span>
+                        {isPremium && <span className="bg-gradient-to-r from-gold-400 to-gold-500 text-gold-900 px-2 py-0.5 rounded-full text-xs font-medium inline-block w-fit mt-1">✨ Premium</span>}
+                      </div>
+                    </Link>
                     <button
                       onClick={() => { handleSignOut(); setIsMenuOpen(false); }}
-                      className="text-stone-600 hover:text-forest-600 transition-colors w-full text-left py-2"
+                      className="text-stone-600 hover:text-forest-600 transition-colors w-full text-left py-2 font-medium"
                     >
                       Sign Out
                     </button>

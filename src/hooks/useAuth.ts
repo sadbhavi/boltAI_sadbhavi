@@ -22,8 +22,8 @@ export function useAuth() {
     // Listen for Firebase Auth changes
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
-      if (firebaseUser) {
-        loadProfile(firebaseUser.uid);
+      if (firebaseUser && firebaseUser.email) {
+        loadProfile(firebaseUser.email);
       } else {
         setProfile(null);
         setLoading(false);
@@ -33,12 +33,12 @@ export function useAuth() {
     return () => unsubscribe();
   }, []);
 
-  const loadProfile = async (userId: string) => {
+  const loadProfile = async (email: string) => {
     try {
-      const { data, error } = await profileAPI.getProfile(userId);
+      const { data, error } = await profileAPI.getProfile(email);
       if (error) {
         // If profile doesn't exist, we might want to create one on the fly or just ignore
-        console.warn('Error loading profile (fetched from Supabase/Mock):', error);
+        console.warn('Error loading profile:', error);
       }
       setProfile(data);
     } catch (error) {
@@ -101,8 +101,15 @@ export function useAuth() {
 
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return { data: null, error: new Error('No user logged in') };
+    if (!user.email) return { data: null, error: new Error('User email not available') };
 
-    const { data, error } = await profileAPI.updateProfile(user.uid, updates);
+    // Include email in updates since backend requires it for upsert
+    const updatesWithEmail = {
+      ...updates,
+      email: user.email
+    };
+
+    const { data, error } = await profileAPI.updateProfile(user.uid, updatesWithEmail);
     if (!error && data) {
       setProfile(data);
     }
