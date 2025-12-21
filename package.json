@@ -13,7 +13,8 @@
     "dev:backend": "cd backend && npm run dev",
     "build": "npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
-    "seed": "cd backend && node ../scripts/seed.js"
+    "seed": "cd backend && node ../scripts/seed.js",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
