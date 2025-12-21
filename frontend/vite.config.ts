@@ -49,5 +49,8 @@ export default defineConfig({
         secure: false,
       }
     }
+  },
+  preview: {
+    allowedHosts: ['sadbhavi.com', 'www.sadbhavi.com']
   }
 });
