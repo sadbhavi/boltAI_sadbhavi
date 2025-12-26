@@ -47,7 +47,7 @@ const Header: React.FC = () => {
 
   const navLinks = [
     { name: 'Home', href: '/', isRoute: true, isHome: true },
-    { name: 'Features', href: 'features', isRoute: true },
+    { name: 'Features', href: 'emotional-support', isRoute: true },
     { name: 'About', href: 'about', isRoute: true },
     { name: 'Pricing', href: 'pricing', isRoute: true },
     { name: 'Blog', href: 'blog', isRoute: true },

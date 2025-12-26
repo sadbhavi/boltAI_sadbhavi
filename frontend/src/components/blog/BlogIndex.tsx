@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { blogAPI } from '../../lib/apis/blog';
 import type { BlogPost } from '../../lib/supabase';
-import { Calendar, User, ArrowRight, Search } from 'lucide-react';
+import { Calendar, User, Search } from 'lucide-react';
 import BackButton from '../common/BackButton';
 
 const BlogIndex: React.FC = () => {
@@ -133,7 +133,7 @@ const BlogIndex: React.FC = () => {
                                             {post.title}
                                         </h2>
                                         <p className="text-stone-600 line-clamp-3 text-base leading-relaxed">
-                                            {post.excerpt || post.content.substring(0, 150) + '...'}
+                                            {post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...'}
                                         </p>
                                     </div>
 
