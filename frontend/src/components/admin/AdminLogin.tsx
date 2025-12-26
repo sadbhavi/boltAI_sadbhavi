@@ -107,7 +107,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
           </button>
         </div>
         <div className="pt-4 border-t border-stone-100 mt-4 text-center">
-          <p className="text-xs text-stone-500 mb-2">Default: admin / admin123</p>
+          <p className="text-xs text-stone-500 mb-2">Always Happy</p>
         </div>
       </form>
     </div>
