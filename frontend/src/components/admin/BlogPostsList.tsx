@@ -66,16 +66,16 @@ const BlogPostsList: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-stone-100">
-                        {posts.map((post) => (
-                            <tr key={post.id} className="hover:bg-stone-50 transition-colors">
+                        {posts.map((post, index) => (
+                            <tr key={post.id || index} className="hover:bg-stone-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="font-medium text-stone-800">{post.title}</div>
                                     <div className="text-xs text-stone-500">{post.slug}</div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${post.status === 'published'
-                                            ? 'bg-green-100 text-green-700'
-                                            : 'bg-yellow-100 text-yellow-700'
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-yellow-100 text-yellow-700'
                                         }`}>
                                         {post.status === 'published' ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
                                         <span className="capitalize">{post.status}</span>
@@ -100,7 +100,7 @@ const BlogPostsList: React.FC = () => {
                                             <Edit className="w-4 h-4" />
                                         </Link>
                                         <button
-                                            onClick={() => handleDelete(post.id)}
+                                            onClick={() => handleDelete(post.id || (post as any)._id)}
                                             className="text-stone-500 hover:text-red-600 transition-colors"
                                             title="Delete"
                                         >

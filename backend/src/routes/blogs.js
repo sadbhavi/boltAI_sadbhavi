@@ -52,8 +52,12 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Create post
-router.post('/', async (req, res) => {
+const simpleAuth = require('../middlewares/auth');
+
+// ... (GET routes remain public)
+
+// Create post - Protected
+router.post('/', simpleAuth, async (req, res) => {
     try {
         const newPost = new BlogPost(req.body);
 
@@ -79,8 +83,8 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Update post
-router.put('/:id', async (req, res) => {
+// Update post - Protected
+router.put('/:id', simpleAuth, async (req, res) => {
     try {
         const updates = req.body;
         if (updates.status === 'published' && !updates.published_at) {
@@ -99,8 +103,8 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete post
-router.delete('/:id', async (req, res) => {
+// Delete post - Protected
+router.delete('/:id', simpleAuth, async (req, res) => {
     try {
         await BlogPost.findByIdAndDelete(req.params.id);
         res.json({ error: null });

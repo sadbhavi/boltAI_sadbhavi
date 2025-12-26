@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+
 import BackButton from '../common/BackButton';
 
 interface AdminLoginProps {
@@ -13,7 +13,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,10 +21,21 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
     setError('');
 
     try {
-      const { error } = await signIn(email, password);
-      if (error) {
-        throw error;
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email, password })
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.error?.message || 'Login failed');
       }
+
+      // Store token
+      localStorage.setItem('admin_token', json.data.token);
+
       if (onSuccess) {
         onSuccess();
       } else {
@@ -57,13 +67,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
         </div>
         <h2 className="text-xl font-semibold text-center mt-6">Admin Login</h2>
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Username</label>
           <input
-            type="email"
+            type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-stone-300 rounded-lg p-2"
-            placeholder="admin@example.com"
+            placeholder="admin"
             required
           />
         </div>
@@ -97,33 +107,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onClose }) => {
           </button>
         </div>
         <div className="pt-4 border-t border-stone-100 mt-4 text-center">
-          <p className="text-xs text-stone-500 mb-2">Development Only</p>
-          <button
-            type="button"
-            onClick={async () => {
-              setLoading(true);
-              // Hardcoded credentials from user request
-              const { error } = await signUp('akkiibaghel2@gmail.com', 'Mahendrasingh2@', 'Admin User');
-              if (error) {
-                // If already exists, just fill the form
-                if (error.code === 'auth/email-already-in-use') {
-                  setEmail('akkiibaghel2@gmail.com');
-                  setPassword('Mahendrasingh2@');
-                  setError('Account exists. Credentials filled.');
-                } else {
-                  setError(error.message);
-                }
-              } else {
-                setEmail('akkiibaghel2@gmail.com');
-                setPassword('Mahendrasingh2@');
-                setError('Account created! Click Login.');
-              }
-              setLoading(false);
-            }}
-            className="text-xs text-blue-600 hover:text-blue-700 underline"
-          >
-            Auto-Setup Default Admin
-          </button>
+          <p className="text-xs text-stone-500 mb-2">Default: admin / admin123</p>
         </div>
       </form>
     </div>

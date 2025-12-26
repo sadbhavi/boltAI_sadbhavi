@@ -1,8 +1,25 @@
-
 import type { PostgrestError } from '@supabase/supabase-js';
 import type { BlogCategory, BlogPost } from '../supabase';
 
 const API_URL = '/api/blogs';
+
+const readFileAsBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+const getHeaders = () => {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  const token = localStorage.getItem('admin_token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+};
 
 export const blogAPI = {
   async getBlogCategories(): Promise<{ data: BlogCategory[] | null; error: PostgrestError | null }> {
@@ -89,6 +106,7 @@ export const blogAPI = {
 
   async createBlogPost(postData: {
     title: string;
+    slug: string;
     content: string;
     excerpt?: string;
     image?: File;
@@ -99,26 +117,20 @@ export const blogAPI = {
     error: PostgrestError | Error | null;
   }> {
     try {
-      // Note: Image upload to Supabase Storage is tricky without Supabase client.
-      // We should upload to our backend or just use a placeholder if file uploading isn't ready.
-      // The current backend doesnt handle file uploads (multipart).
-      // We'll skip image upload for now or assume URL is passed if we change type.
-      // But the UI sends a File.
-      // Let's modify the UI or handle it here.
-      // For this migration, we'll log a warning and just send text data.
+      let featured_image = undefined;
+      if (postData.image) {
+        featured_image = await readFileAsBase64(postData.image);
+      }
 
       const body = {
         ...postData,
-        // strip image file as we cant send it via JSON
+        featured_image,
         image: undefined
       };
-      // If image was selected, we lose it. 
-      // Ideal fix: Helper to upload using FormData to a new /api/upload endpoint.
-      // Current scope: Migration of data. I'll just save the text fields.
 
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getHeaders(),
         body: JSON.stringify(body)
       });
       const json = await res.json();
@@ -132,10 +144,21 @@ export const blogAPI = {
   async updateBlogPost(id: string, updates: Partial<BlogPost> & { image?: File }): Promise<{ data: BlogPost | null; error: PostgrestError | Error | null }> {
     try {
       const { image, ...params } = updates;
+      let featured_image = undefined;
+
+      if (image) {
+        featured_image = await readFileAsBase64(image);
+      }
+
+      const body = {
+        ...params,
+        ...(featured_image ? { featured_image } : {})
+      };
+
       const res = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
+        headers: getHeaders(),
+        body: JSON.stringify(body)
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error?.message);
@@ -147,7 +170,10 @@ export const blogAPI = {
 
   async deleteBlogPost(id: string): Promise<{ error: PostgrestError | null }> {
     try {
-      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error?.message);
       return { error: null };

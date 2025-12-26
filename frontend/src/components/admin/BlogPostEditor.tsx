@@ -12,9 +12,11 @@ const BlogPostEditor: React.FC = () => {
     const isEditing = !!id;
 
     const [title, setTitle] = useState('');
+    const [slug, setSlug] = useState('');
     const [content, setContent] = useState('');
     const [excerpt, setExcerpt] = useState('');
     const [status, setStatus] = useState<'draft' | 'published'>('draft');
+    const [categoryId, setCategoryId] = useState('wellness');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -27,15 +29,24 @@ const BlogPostEditor: React.FC = () => {
         }
     }, [id, isEditing]);
 
+    // Auto-generate slug from title if not manually edited
+    useEffect(() => {
+        if (!isEditing && title) {
+            setSlug(title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
+        }
+    }, [title, isEditing]);
+
     const fetchPost = async (postId: string) => {
         const { data, error } = await blogAPI.getBlogPostById(postId);
         if (error) {
             setError('Error fetching post: ' + error.message);
         } else if (data) {
             setTitle(data.title);
+            setSlug(data.slug);
             setContent(data.content);
             setExcerpt(data.excerpt || '');
             setStatus(data.status as 'draft' | 'published');
+            setCategoryId(data.category_id || 'wellness');
             setPreviewUrl(data.featured_image || null);
         }
         setInitialLoading(false);
@@ -58,18 +69,22 @@ const BlogPostEditor: React.FC = () => {
             if (isEditing && id) {
                 const { error } = await blogAPI.updateBlogPost(id, {
                     title,
+                    slug,
                     content,
                     excerpt,
                     status,
+                    category_id: categoryId,
                     image: imageFile || undefined
                 });
                 if (error) throw error;
             } else {
                 const { error } = await blogAPI.createBlogPost({
                     title,
+                    slug,
                     content,
                     excerpt,
                     status,
+                    category_id: categoryId,
                     image: imageFile || undefined
                 });
                 if (error) throw error;
@@ -111,7 +126,7 @@ const BlogPostEditor: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex items-center space-x-2 bg-forest-600 text-white px-4 py-2 rounded-lg hover:bg-forest-700 transition-colors disabled:opacity-50"
+                        className="flex-1 items-center space-x-2 bg-forest-600 text-white px-4 py-2 rounded-lg hover:bg-forest-700 transition-colors disabled:opacity-50 flex"
                     >
                         <Save className="w-4 h-4" />
                         <span>{loading ? 'Saving...' : 'Save'}</span>
@@ -122,16 +137,29 @@ const BlogPostEditor: React.FC = () => {
             <div className="p-6 flex-1 space-y-6 overflow-y-auto">
                 {error && <div className="p-4 bg-red-50 text-red-600 rounded-lg">{error}</div>}
 
-                <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-2">Title</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-transparent text-lg font-medium"
-                        placeholder="Post Title"
-                        required
-                    />
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm font-medium text-stone-700 mb-2">Title</label>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-transparent text-lg font-medium"
+                            placeholder="Post Title"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-stone-700 mb-2">Slug</label>
+                        <input
+                            type="text"
+                            value={slug}
+                            onChange={(e) => setSlug(e.target.value)}
+                            className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-transparent text-lg text-stone-600 font-mono bg-stone-50"
+                            placeholder="post-slug"
+                            required
+                        />
+                    </div>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
@@ -160,6 +188,21 @@ const BlogPostEditor: React.FC = () => {
                     </div>
 
                     <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-stone-700 mb-2">Category</label>
+                            <select
+                                value={categoryId}
+                                onChange={(e) => setCategoryId(e.target.value)}
+                                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-transparent"
+                            >
+                                <option value="wellness">Wellness</option>
+                                <option value="meditation">Meditation</option>
+                                <option value="sleep">Sleep</option>
+                                <option value="mental-health">Mental Health</option>
+                                <option value="journaling">Journaling</option>
+                            </select>
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-stone-700 mb-2">Featured Image</label>
                             <div className="border-2 border-dashed border-stone-300 rounded-lg p-4 text-center hover:border-forest-500 transition-colors cursor-pointer relative group">

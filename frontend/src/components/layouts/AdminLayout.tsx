@@ -9,18 +9,24 @@ const AdminLayout: React.FC = () => {
     const navigate = useNavigate();
 
     React.useEffect(() => {
+        const adminToken = localStorage.getItem('admin_token');
+        // If we have an admin token, we are good.
+        if (adminToken) return;
+
         if (!loading && !user) {
             navigate('/admin/login');
         }
     }, [user, loading, navigate]);
 
     const handleSignOut = async () => {
+        localStorage.removeItem('admin_token');
         await signOut();
         navigate('/admin/login');
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-    if (!user) return null;
+    const adminToken = localStorage.getItem('admin_token');
+    if (loading && !adminToken) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    if (!user && !adminToken) return null;
 
     return (
         <div className="min-h-screen bg-gray-100 flex">
